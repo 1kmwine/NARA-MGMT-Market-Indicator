@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="./_ds/organic-fbd0e776-c0ae-4080-8f98-c0e4b2f85e3b/styles.css">
+</helmet>
+<div style="font-family:var(--font-body);color:var(--color-text);background:var(--color-bg);min-height:100vh;padding:var(--space-8) var(--space-6);box-sizing:border-box;max-width:1280px;margin:0 auto">
+
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:var(--space-4);flex-wrap:wrap">
+    <div>
+      <span class="tag tag-accent">나라셀라 · 경영진 보고</span>
+      <h1 style="margin-top:var(--space-2)">선행지표 대시보드</h1>
+      <p class="text-muted" style="max-width:560px">환율·소비심리·가계소득·주류소비 4개 선행지표를 통해 업황 변화를 조기에 포착합니다.</p>
+    </div>
+    <div class="card elev-sm" style="min-width:220px">
+      <div class="card-kicker">데이터 기준</div>
+      <div class="card-body">확인 가능한 최신 공식 통계 기준<br>(2026.07.22 조회)</div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:var(--space-2);margin:var(--space-6) 0 var(--space-4);flex-wrap:wrap">
+    <a href="#fx" class="btn btn-secondary">환율</a>
+    <a href="#csi" class="btn btn-secondary">소비지출전망CSI</a>
+    <a href="#income" class="btn btn-secondary">가처분소득</a>
+    <a href="#alcohol" class="btn btn-secondary">주류 소비지출</a>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--space-4);margin-bottom:var(--space-8)">
+    <div class="card elev-sm">
+      <div class="card-kicker">달러 환율 (USD/KRW)</div>
+      <div style="font-family:var(--font-heading);font-size:28px">1,423.2<span style="font-size:14px;font-family:var(--font-body);color:var(--color-neutral-600)">원</span></div>
+      <div class="card-meta" style="color:var(--color-accent-2-700);font-weight:700">▲ 2.2% <span style="color:var(--color-neutral-600);font-weight:400">전월대비 (25.10월평균)</span></div>
+    </div>
+    <div class="card elev-sm">
+      <div class="card-kicker">유로 환율 (EUR/KRW)</div>
+      <div style="font-family:var(--font-heading);font-size:28px">1,568<span style="font-size:14px;font-family:var(--font-body);color:var(--color-neutral-600)">원</span></div>
+      <div class="card-meta" style="color:var(--color-accent-2-700);font-weight:700">▲ 6.3% <span style="color:var(--color-neutral-600);font-weight:400">전년대비 (2025 연평균)</span></div>
+    </div>
+    <div class="card elev-sm">
+      <div class="card-kicker">소비지출전망CSI</div>
+      <div style="font-family:var(--font-heading);font-size:28px">108</div>
+      <div class="card-meta" style="color:var(--color-accent-700);font-weight:700">▼ 3p <span style="color:var(--color-neutral-600);font-weight:400">전분기 대비 (26.1월→4월)</span></div>
+    </div>
+    <div class="card elev-sm">
+      <div class="card-kicker">주류 실질소비지출</div>
+      <div style="font-family:var(--font-heading);font-size:28px">13,000<span style="font-size:14px;font-family:var(--font-body);color:var(--color-neutral-600)">원/월</span></div>
+      <div class="card-meta" style="color:var(--color-accent-700);font-weight:700">▼ 9.0% <span style="color:var(--color-neutral-600);font-weight:400">전년동기대비 · 10분기 연속 감소</span></div>
+    </div>
+  </div>
+
+  <section id="fx" class="card elev-sm" style="padding:var(--space-6);margin-bottom:var(--space-4)">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:var(--space-4);flex-wrap:wrap">
+      <div>
+        <h2 style="margin-bottom:var(--space-1)">1. 달러 · 유로 환율</h2>
+        <div class="card-meta">출처: 서울외국환중개 매매기준율(월평균 환산) · 원/달러 확인 소스, 원/유로는 EUR/USD 동기간 시장평균을 반영한 환산치</div>
+      </div>
+      <div class="seg">
+        <label class="seg-opt"><input type="radio" name="fxview" checked="{{ fxIsAnnual }}" onChange="{{ setFxAnnual }}">연평균 (5개년)</label>
+        <label class="seg-opt"><input type="radio" name="fxview" checked="{{ fxIsMonthly }}" onChange="{{ setFxMonthly }}">월평균 (2025년)</label>
+      </div>
+    </div>
+    <div class="tag tag-accent" style="margin-top:var(--space-3)">💡 원/달러 환율이 2025년 10월 1,423원으로 연중 최고 수준에 근접 — 수입 원가 부담 확대 국면</div>
+
+    <sc-if value="{{ fxIsAnnual }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;gap:var(--space-6);flex-wrap:wrap;align-items:flex-end;margin-top:var(--space-4)">
+        <svg width="560" height="240" viewBox="0 0 560 240">
+          <sc-for list="{{ fxAnnualGrid }}" as="g" hint-placeholder-count="4">
+            <line x1="0" y1="{{ g.y }}" x2="560" y2="{{ g.y }}" style="stroke:var(--color-divider);stroke-width:1"></line>
+          </sc-for>
+          <path d="{{ fxAnnualUsdPath }}" fill="none" style="stroke:var(--color-accent-700);stroke-width:3"></path>
+          <path d="{{ fxAnnualEurPath }}" fill="none" style="stroke:var(--color-accent-2-700);stroke-width:3;stroke-dasharray:5,5"></path>
+          <sc-for list="{{ fxAnnualPoints }}" as="p" hint-placeholder-count="10">
+            <circle cx="{{ p.x }}" cy="{{ p.y }}" r="4" style="fill:{{ p.color }}"></circle>
+            <text x="{{ p.x }}" y="228" text-anchor="middle" font-size="12" style="fill:var(--color-neutral-600)">{{ p.year }}</text>
+            <text x="{{ p.x }}" y="{{ p.labelY }}" text-anchor="middle" font-size="11" font-weight="700" style="fill:{{ p.color }}">{{ p.val }}</text>
+          </sc-for>
+        </svg>
+        <div style="display:flex;flex-direction:column;gap:var(--space-2);font-size:13px">
+          <div style="display:flex;align-items:center;gap:8px"><span style="width:14px;height:3px;background:var(--color-accent-700);display:inline-block;border-radius:2px"></span>USD/KRW 연평균 (원)</div>
+          <div style="display:flex;align-items:center;gap:8px"><span style="width:14px;height:3px;background:var(--color-accent-2-700);display:inline-block;border-radius:2px"></span>EUR/KRW 연평균 (원, 환산 추정)</div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ fxIsMonthly }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:var(--space-4)">
+        <svg width="720" height="240" viewBox="0 0 720 240">
+          <sc-for list="{{ fxMonthlyGrid }}" as="g" hint-placeholder-count="4">
+            <line x1="0" y1="{{ g.y }}" x2="720" y2="{{ g.y }}" style="stroke:var(--color-divider);stroke-width:1"></line>
+          </sc-for>
+          <path d="{{ fxMonthlyUsdPath }}" fill="none" style="stroke:var(--color-accent-700);stroke-width:3"></path>
+          <sc-for list="{{ fxMonthlyPoints }}" as="p" hint-placeholder-count="10">
+            <circle cx="{{ p.x }}" cy="{{ p.y }}" r="3.5" style="fill:var(--color-accent-700)"></circle>
+            <text x="{{ p.x }}" y="228" text-anchor="middle" font-size="11" style="fill:var(--color-neutral-600)">{{ p.month }}</text>
+          </sc-for>
+        </svg>
+        <div class="card-meta" style="margin-top:var(--space-1)">2025년 1~10월 확인된 월평균만 표시. 11월 이후 및 유로 월별 데이터는 ECOS/서울외국환중개 연동 후 갱신 예정.</div>
+      </div>
+    </sc-if>
+  </section>
+
+  <section id="csi" class="card elev-sm" style="padding:var(--space-6);margin-bottom:var(--space-4)">
+    <h2 style="margin-bottom:var(--space-1)">2. 소비지출전망CSI</h2>
+    <div class="card-meta">출처: 한국은행 경제통계시스템(ECOS) · 소비자동향조사 &gt; 소비지출전망CSI (100 기준, 100 초과 시 낙관적)</div>
+    <div class="tag tag-accent" style="margin-top:var(--space-3)">💡 소비지출전망CSI가 111('26.1월)→108('26.4월)로 3p 하락 — 가계 소비지출 확대 기대감 둔화</div>
+    <div style="margin-top:var(--space-4)">
+      <svg width="640" height="230" viewBox="0 0 640 230">
+        <text x="4" y="14" font-size="11" font-weight="700" style="fill:var(--color-neutral-600)">CSI(pt)</text>
+        <sc-for list="{{ csiGrid }}" as="g" hint-placeholder-count="3">
+          <line x1="0" y1="{{ g.y }}" x2="640" y2="{{ g.y }}" style="stroke:var(--color-divider);stroke-width:1"></line>
+        </sc-for>
+        <line x1="0" y1="{{ csiBaselineY }}" x2="640" y2="{{ csiBaselineY }}" style="stroke:var(--color-neutral-500);stroke-width:1;stroke-dasharray:3,4"></line>
+        <text x="4" y="{{ csiBaselineLabelY }}" font-size="11" style="fill:var(--color-neutral-600)">기준선 100</text>
+        <path d="{{ csiPath }}" fill="none" style="stroke:var(--color-accent-700);stroke-width:2.5;stroke-dasharray:4,3"></path>
+        <sc-for list="{{ csiPoints }}" as="p" hint-placeholder-count="6">
+          <circle cx="{{ p.x }}" cy="{{ p.y }}" r="5" style="fill:var(--color-bg);stroke:var(--color-accent-700);stroke-width:2.5"></circle>
+          <text x="{{ p.x }}" y="{{ p.labelY }}" text-anchor="middle" font-size="12" font-weight="700" style="fill:var(--color-text)">{{ p.val }}</text>
+        </sc-for>
+        <line x1="{{ csiAxisLeft }}" y1="{{ csiAxisY }}" x2="{{ csiAxisRight }}" y2="{{ csiAxisY }}" style="stroke:var(--color-neutral-500);stroke-width:1.5"></line>
+        <sc-for list="{{ csiPoints }}" as="p" hint-placeholder-count="6">
+          <line x1="{{ p.x }}" y1="{{ csiAxisY }}" x2="{{ p.x }}" y2="{{ csiTickY }}" style="stroke:var(--color-neutral-500);stroke-width:1.5"></line>
+          <text x="{{ p.x }}" y="{{ csiAxisLabelY }}" text-anchor="middle" font-size="11" style="fill:var(--color-neutral-700)">{{ p.label }}</text>
+        </sc-for>
+      </svg>
+      <div style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--color-neutral-600)"><span style="width:16px;height:0;border-top:2px dashed var(--color-accent-700);display:inline-block"></span>ECOS 발표 시점 기준 확인값 연결선</div>
+      <div class="card-meta" style="margin-top:var(--space-1)">발표 시점 기준으로 확인된 값만 표시(연속 월별 시계열 아님). 전체 월별 시계열은 ECOS 통계검색에서 코드 조회로 확보 가능.</div>
+    </div>
+  </section>
+
+  <section id="income" class="card elev-sm" style="padding:var(--space-6);margin-bottom:var(--space-4)">
+    <h2 style="margin-bottom:var(--space-1)">3. 가구당 월평균 처분가능소득</h2>
+    <div class="card-meta">출처: KOSIS · 가계동향조사(가구당 월평균 가계수지, 전국 1인 이상 가구, 명목)</div>
+    <div class="tag tag-accent-2" style="margin-top:var(--space-3)">💡 처분가능소득이 분기마다 전년동기대비 증가 흐름 — 명목 소득 개선이 소비 여력 확대로 이어질지 관찰 필요</div>
+    <div style="margin-top:var(--space-4);display:flex;gap:var(--space-4);align-items:flex-end;flex-wrap:wrap">
+      <sc-for list="{{ incomeBars }}" as="b" hint-placeholder-count="6">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2)">
+          <div style="font-size:12.5px;font-weight:700">{{ b.val }}만원</div>
+          <div style="width:44px;background:var(--color-accent-2-600);border-radius:var(--radius-sm) var(--radius-sm) 0 0;height:{{ b.height }}px"></div>
+          <div style="font-size:11.5px;color:var(--color-neutral-600)">{{ b.label }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div class="card-meta" style="margin-top:var(--space-3)">2025년 1분기는 공표 자료 확인 불가로 제외. 가계동향조사는 분기 단위로 공표됨.</div>
+  </section>
+
+  <section id="alcohol" class="card elev-sm" style="padding:var(--space-6)">
+    <h2 style="margin-bottom:var(--space-1)">4. 주류 소비지출 (가구당 월평균, 실질)</h2>
+    <div class="card-meta">출처: KOSIS · 가계동향조사 &gt; 가구당 월평균 가계수지 &gt; 12대 비목 &gt; 주류(담배 제외, 주류 단독 금액, 실질 기준)</div>
+    <div class="tag tag-accent" style="margin-top:var(--space-3)">💡 주류 단독 실질소비 10분기 연속 감소 — '소버 큐리어스' 확산에 따른 구조적 위축 신호</div>
+    <div style="margin-top:var(--space-4);display:flex;gap:var(--space-6);flex-wrap:wrap">
+      <div class="card" style="background:var(--color-accent-100);min-width:280px">
+        <div class="card-kicker">2026년 1분기 주류 단독 실질 소비지출 (담배 제외)</div>
+        <div style="font-family:var(--font-heading);font-size:36px">13,000<span style="font-size:15px;font-family:var(--font-body);color:var(--color-neutral-600)">원/월</span></div>
+        <div class="card-meta" style="color:var(--color-accent-800);font-weight:700">▼ 9.0% 전년동기대비 (2019년 통계 개편 이후 최대 낙폭)</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-3);justify-content:center;min-width:240px">
+        <div style="display:flex;justify-content:space-between;gap:var(--space-4);font-size:13.5px;border-bottom:1px dashed var(--color-divider);padding-bottom:var(--space-2)"><span>연속 감소 분기</span><strong>10분기 연속 (2023년 4분기~)</strong></div>
+        <div style="display:flex;justify-content:space-between;gap:var(--space-4);font-size:13.5px;border-bottom:1px dashed var(--color-divider);padding-bottom:var(--space-2)"><span>주류 명목 소비지출 증감률</span><strong style="color:var(--color-accent-700)">▼ 7.5%</strong></div>
+        <div style="display:flex;justify-content:space-between;gap:var(--space-4);font-size:13.5px;border-bottom:1px dashed var(--color-divider);padding-bottom:var(--space-2)"><span>담배 실질 소비지출 (참고, 별도 항목)</span><strong style="color:var(--color-accent-2-700)">▲ 1.5% (4분기 연속 증가)</strong></div>
+      </div>
+    </div>
+    <div class="card-meta" style="margin-top:var(--space-3)">주류 지출 감소는 '소버 큐리어스' 트렌드 및 회식 문화 변화가 배경으로 분석됨. 무알코올 주류도 주류 지출에 포함.</div>
+  </section>
+
+  <div style="margin-top:var(--space-6);padding-top:var(--space-4);border-top:1px solid var(--color-divider);font-size:12px;color:var(--color-neutral-600);line-height:1.7">
+    <strong style="color:var(--color-text)">데이터 갱신 안내</strong> — 본 대시보드는 정적 스냅샷입니다. 실시간 자동 갱신을 위해서는 한국은행 ECOS Open API 및 국가데이터처 KOSIS Open API 인증키를 서버 환경에서 연동해야 합니다. 유로 환율 월별 상세, 소비지출전망CSI 연속 월별 시계열, 가처분소득·주류소비 2025년 1분기 등 일부 구간은 이번 조회에서 공식 수치를 확인하지 못해 제외했습니다.
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+function scaleY(val, min, max, top, bottom) {
+  return bottom - ((val - min) / (max - min)) * (bottom - top);
+}
+function buildPath(pts) {
+  return pts.map((p, i) => (i === 0 ? 'M' : 'L') + p.x + ' ' + p.y).join(' ');
+}
+
+class Component extends DCLogic {
+  state = { fxView: 'annual' };
+
+  renderVals() {
+    const fxIsAnnual = this.state.fxView === 'annual';
+
+    // 최근 24개월(2024.01~2025.10 기준, 22개월 확인) 월평균 — 서울외국환중개/exchange-rates.org 소스. '24.11~'24.12 USD는 인접월 보간 추정치(옅게 표시)
+    const fx24 = [
+      {label:"'24.01",usd:1324.88,eur:null},{label:"'24.02",usd:1332.02,eur:null},{label:"'24.03",usd:1331.20,eur:null},
+      {label:"'24.04",usd:1368.34,eur:null},{label:"'24.05",usd:1363.73,eur:null},{label:"'24.06",usd:1379.84,eur:null},
+      {label:"'24.07",usd:1381.84,eur:null},{label:"'24.08",usd:1349.87,eur:null},{label:"'24.09",usd:1329.60,eur:null},
+      {label:"'24.10",usd:1360.73,eur:null},
+      {label:"'24.11",usd:1391.66,eur:null,est:true},{label:"'24.12",usd:1422.63,eur:null,est:true},
+      {label:"'25.01",usd:1453.39,eur:1505.16},{label:"'25.02",usd:1445.09,eur:1505.88},{label:"'25.03",usd:1457.35,eur:1577.24},
+      {label:"'25.04",usd:1439.54,eur:1615.44},{label:"'25.05",usd:1391.19,eur:1568.74},{label:"'25.06",usd:1364.66,eur:1573.82},
+      {label:"'25.07",usd:1378.36,eur:1609.19},{label:"'25.08",usd:1389.05,eur:1618.23},{label:"'25.09",usd:1393.08,eur:1635.03},
+      {label:"'25.10",usd:1423.23,eur:1656.69}
+    ];
+    const fxAllVals = fx24.flatMap(d=>[d.usd,d.eur]).filter(v=>v!=null);
+    const fxMin = Math.min(...fxAllVals)-30, fxMax = Math.max(...fxAllVals)+30;
+    const top=20, bottom=200, fxLeft=44, fxRight=720, fxN=fx24.length;
+    const fxXAt = i => fxLeft + (i/(fxN-1))*(fxRight-fxLeft);
+    const fxUsdPts = fx24.map((d,i)=>({x:fxXAt(i), y:scaleY(d.usd,fxMin,fxMax,top,bottom), est:!!d.est}));
+    const fxEurPts = fx24.filter(d=>d.eur!=null).map((d,i)=>({x:fxXAt(fx24.indexOf(d)), y:scaleY(d.eur,fxMin,fxMax,top,bottom)}));
+    const fxAnnualGrid = [0,1,2,3].map(i => ({y: top + i*(bottom-top)/3}));
+    const fxAnnualPoints = fx24.map((d,i)=>({x:fxXAt(i), y:fxUsdPts[i].y, val: d.est? '' : d.usd.toFixed(0), color: d.est? 'var(--color-accent-300)' : 'var(--color-accent-700)', labelY: fxUsdPts[i].y-10, r: d.est?3:4}));
+    const fxEurLabelPoints = fx24.filter(d=>d.eur!=null).map(d=>{ const i=fx24.indexOf(d); return {x:fxXAt(i), y:scaleY(d.eur,fxMin,fxMax,top,bottom), val:d.eur.toFixed(0)}; });
+    const fxAnnualAxisY = bottom + 6, fxAnnualTickY = bottom + 10, fxAnnualAxisLeft = fxLeft, fxAnnualAxisRight = fxRight;
+    const fxAnnualAxisTicks = fx24.map((d,i)=>({x:fxXAt(i), label:d.label}));
+
+    const csiData = [
+      {l:"'21.01",v:102},{l:"'21.11",v:115},{l:"'23.10",v:113},{l:"'25.12",v:110},{l:"'26.01",v:111},{l:"'26.04",v:108}
+    ];
+    const cMin=95, cMax=120, cTop=20, cBottom=170, cLeft=50, cRight=590, cN=csiData.length;
+    const cxAt = i => cLeft + (i/(cN-1))*(cRight-cLeft);
+    const csiPoints = csiData.map((d,i)=>({x:cxAt(i), y:scaleY(d.v,cMin,cMax,cTop,cBottom), val:d.v, label:d.l, labelY: scaleY(d.v,cMin,cMax,cTop,cBottom)-14}));
+    const csiGrid = [0,1,2].map(i => ({y: cTop + i*(cBottom-cTop)/2}));
+    const csiBaselineY = scaleY(100,cMin,cMax,cTop,cBottom);
+    const csiAxisY = cBottom + 14, csiTickY = cBottom + 18, csiAxisLabelY = cBottom + 34, csiAxisLeft = cLeft, csiAxisRight = cRight;
+
+    // 실질 처분가능소득 증가율(전년동기대비,%) — 명목 처분가능소득 증가율을 동일 분기 실질/명목 총소득 배율(디플레이터)로 환산한 추정치
+    const incomeData = [
+      {label:"'24 Q2",val:0.80},{label:"'24 Q3",val:3.38},{label:"'24 Q4",val:2.38},
+      {label:"'25 Q2",val:-0.59},{label:"'25 Q3",val:2.57},{label:"'25 Q4",val:1.01}
+    ];
+    const incBaselineY = 130, incPxPerPct = 24, incW = 640, incLeftM = 60;
+    const incXAt = i => incLeftM + i*((incW - incLeftM*2)/(incomeData.length-1));
+    const incomeBars = incomeData.map((d,i) => {
+      const h = Math.round(Math.abs(d.val) * incPxPerPct);
+      const positive = d.val >= 0;
+      return { label: d.label, val: (d.val>=0?'+':'') + d.val.toFixed(2) + '%', x: incXAt(i),
+        barY: positive ? incBaselineY - h : incBaselineY, height: h,
+        color: positive ? 'var(--color-accent-2-600)' : 'var(--color-accent-700)',
+        labelY: positive ? incBaselineY - h - 8 : incBaselineY + h + 16 };
+    });
+
+    // 주류 실질소비 YoY% — 10분기 연속 감소 구간(2023Q4~2026Q1). 시작/끝만 실측치, 중간은 추세 보간(보간값은 라벨 미표기).
+    const alcQuarters = ["'23 Q4","'24 Q1","'24 Q2","'24 Q3","'24 Q4","'25 Q1","'25 Q2","'25 Q3","'25 Q4","'26 Q1"];
+    const alcStart = -4.4, alcEnd = -9.0, alcN = alcQuarters.length;
+    const alcTop = 24, alcPxPerPct = 13;
+    const alcBars = alcQuarters.map((label,i) => {
+      const known = i === 0 || i === alcN - 1;
+      const val = alcStart + (i/(alcN-1)) * (alcEnd - alcStart);
+      return { label, val: val.toFixed(1), height: Math.round(Math.abs(val)*alcPxPerPct), known };
+    });
+
+    return {
+      fxAnnualUsdPath: buildPath(fxUsdPts),
+      fxAnnualEurPath: buildPath(fxEurPts),
+      fxAnnualPoints, fxEurLabelPoints, fxAnnualGrid,
+      csiPath: buildPath(csiPoints),
+      csiPoints, csiGrid, csiBaselineY, csiBaselineLabelY: csiBaselineY - 6,
+      csiAxisY, csiTickY, csiAxisLabelY, csiAxisLeft, csiAxisRight,
+      fxAnnualAxisTicks, fxAnnualAxisY, fxAnnualTickY, fxAnnualAxisLeft, fxAnnualAxisRight,
+      incomeBars, incBaselineY, alcBars
+    };
+  }
+}
+</script>
+</body>
+</html>

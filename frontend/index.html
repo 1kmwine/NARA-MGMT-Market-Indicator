@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>선행지표 대시보드</title>
+<link rel="stylesheet" href="./styles.css">
+<style>
+  /* 임원 보고용 톤: organic 테마의 따뜻한 크림/테라코타 팔레트 대신, 절제된 그레이·슬레이트 팔레트로 재정의.
+     styles.css의 컴포넌트(.card, .tag 등)는 전부 var(--color-*) 기반이라 여기서 값만 바꿔도 전체에 적용된다. */
+  :root {
+    --color-bg: #f6f7f8;
+    --color-surface: #ffffff;
+    --color-text: #20242b;
+    --color-accent: #3d4c60;
+    --color-accent-2: #4a6b64;
+    --color-divider: color-mix(in srgb, #20242b 12%, transparent);
+
+    --color-neutral-100: #f7f8f9;
+    --color-neutral-200: #eceef0;
+    --color-neutral-300: #d7dbdf;
+    --color-neutral-400: #b7bec5;
+    --color-neutral-500: #939ba4;
+    --color-neutral-600: #6c7580;
+    --color-neutral-700: #4f5761;
+    --color-neutral-800: #363c44;
+    --color-neutral-900: #22262c;
+
+    --color-accent-100: #eef1f4;
+    --color-accent-200: #dde3e9;
+    --color-accent-300: #c2cbd5;
+    --color-accent-400: #97a3b2;
+    --color-accent-500: #6c7c8f;
+    --color-accent-600: #4f5f72;
+    --color-accent-700: #3d4c60;
+    --color-accent-800: #2b3745;
+    --color-accent-900: #1c242e;
+
+    --color-accent-2-100: #edf3f1;
+    --color-accent-2-200: #dbe7e3;
+    --color-accent-2-300: #b8d0c8;
+    --color-accent-2-400: #8baea3;
+    --color-accent-2-500: #628f81;
+    --color-accent-2-600: #4a6b64;
+    --color-accent-2-700: #38534c;
+    --color-accent-2-800: #283c37;
+    --color-accent-2-900: #1a2825;
+
+    /* 전년동기대비 증감 색상 (수치에만 적용, 그래프 막대 색과는 무관): 상승(증가) = 빨강, 하락(감소) = 파랑 */
+    --color-rise: #b5453d;
+    --color-fall: #2f5fa8;
+  }
+
+  body { font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); margin: 0; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: var(--space-8) var(--space-6); box-sizing: border-box; }
+
+  /* 임원 보고용 톤: 숫자·제목 전부 본문 서체(Figtree)로 통일, 장식적 디스플레이 서체(Caprasimo)는 쓰지 않음 */
+  .wrap h1 { font-family: var(--font-body); font-weight: 800; font-size: 28px; letter-spacing: -0.01em; }
+  .wrap h2 { font-family: var(--font-body); font-weight: 800; font-size: 18px; letter-spacing: -0.005em; margin-bottom: 2px; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-8); }
+  .kpi-value { font-family: var(--font-body); font-weight: 800; font-size: 26px; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+  .kpi-unit { font-size: 14px; font-family: var(--font-body); font-weight: 600; color: var(--color-neutral-600); }
+  .section { padding: var(--space-6); margin-bottom: var(--space-4); }
+  .section-head { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-4); flex-wrap: wrap; }
+  .section-insight { font-size: 14px; font-weight: 700; color: var(--color-text); margin: 2px 0 4px; }
+  .section-source { font-size: 11.5px; color: var(--color-neutral-600); margin-bottom: 2px; }
+  .legend-row { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+  .legend-dot { width: 14px; height: 3px; display: inline-block; border-radius: 2px; }
+  .source-badge { font-size: 11px; padding: 2px 8px; border-radius: 999px; font-weight: 700; }
+  .source-badge.live { background: var(--color-accent-2-100); color: var(--color-accent-2-700); }
+  .source-badge.fallback { background: var(--color-neutral-200); color: var(--color-neutral-700); }
+  .footer-note { margin-top: var(--space-6); padding-top: var(--space-4); border-top: 1px solid var(--color-divider); font-size: 12px; color: var(--color-neutral-600); line-height: 1.7; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:var(--space-4);flex-wrap:wrap">
+    <div>
+      <span class="tag tag-accent">나라셀라 · 경영진 보고</span>
+      <h1 style="margin-top:var(--space-2)">선행지표 대시보드</h1>
+      <p class="text-muted" style="max-width:560px">환율·소비심리·가계소득·주류소비 4개 선행지표를 통해 업황 변화를 조기에 포착합니다.</p>
+    </div>
+    <div class="card elev-sm" style="min-width:220px">
+      <div class="card-kicker">데이터 기준</div>
+      <div class="card-body" id="data-as-of">불러오는 중…</div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:var(--space-2);margin:var(--space-6) 0 var(--space-4);flex-wrap:wrap">
+    <a href="#fx" class="btn btn-secondary">환율</a>
+    <a href="#csi" class="btn btn-secondary">소비지출전망CSI</a>
+    <a href="#income" class="btn btn-secondary">가처분소득</a>
+    <a href="#alcohol" class="btn btn-secondary">주류 소비지출</a>
+  </div>
+
+  <div class="kpi-grid" id="kpi-grid">
+    <div class="card elev-sm"><div class="card-kicker">불러오는 중…</div></div>
+  </div>
+
+  <section id="fx" class="card elev-sm section">
+    <h2>1. 달러 · 유로 환율</h2>
+    <p class="section-insight" id="fx-insight">불러오는 중…</p>
+    <div class="section-source" id="fx-source">출처: 확인 중…</div>
+    <div id="fx-chart" style="margin-top:var(--space-4)"></div>
+    <div style="display:flex;gap:var(--space-2);margin-top:var(--space-2)">
+      <div class="legend-row"><span class="legend-dot" style="background:var(--color-accent-700)"></span>USD/KRW 월평균 (원)</div>
+      <div class="legend-row"><span class="legend-dot" style="background:var(--color-accent-2-700)"></span>EUR/KRW 월평균 (원)</div>
+    </div>
+  </section>
+
+  <section id="csi" class="card elev-sm section">
+    <h2>2. 소비지출전망CSI</h2>
+    <p class="section-insight" id="csi-insight">불러오는 중…</p>
+    <div class="section-source" id="csi-source">출처: 확인 중…</div>
+    <div id="csi-chart" style="margin-top:var(--space-4)"></div>
+  </section>
+
+  <section id="income" class="card elev-sm section">
+    <h2>3. 가구당 월평균 처분가능소득 (실질, 전년동기대비 증감률)</h2>
+    <p class="section-insight" id="income-insight">불러오는 중…</p>
+    <div class="section-source" id="income-source">출처: 확인 중…</div>
+    <div id="income-bars" style="margin-top:var(--space-4)"></div>
+  </section>
+
+  <section id="alcohol" class="card elev-sm section">
+    <h2>4. 주류 소비지출 (가구당 월평균, 실질)</h2>
+    <p class="section-insight" id="alcohol-insight">불러오는 중…</p>
+    <div class="section-source" id="alcohol-source">출처: 확인 중…</div>
+    <div class="card" style="background:var(--color-accent-100);max-width:320px;margin-top:var(--space-4)" id="alcohol-summary-card">
+      <div class="card-kicker">주류 단독 실질 소비지출</div>
+      <div class="kpi-value">불러오는 중…</div>
+    </div>
+    <div id="alcohol-chart" style="margin-top:var(--space-5)"></div>
+  </section>
+
+  <div class="footer-note">
+    <strong style="color:var(--color-text)">데이터 갱신 안내</strong> — 이 화면은 로컬 백엔드(<code>/api/*</code>)에서 데이터를 받아옵니다.
+    각 카드의 <span class="source-badge live">실시간</span> 배지는 ECOS/KOSIS API 연동 결과, <span class="source-badge fallback">스냅샷</span> 배지는
+    통계코드 설정 전 임시 값임을 의미합니다.
+  </div>
+</div>
+
+<script src="./app.js"></script>
+</body>
+</html>

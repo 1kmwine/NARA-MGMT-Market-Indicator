@@ -1,0 +1,16 @@
+# 로컬 전용 설정 (Claude Code 개인 권한 승인 기록, 공유 불필요)
+.claude/settings.local.json
+
+# Python
+backend/.venv/
+backend/__pycache__/
+**/__pycache__/
+*.pyc
+
+# 비밀키 / 로컬 캐시
+backend/.env
+backend/cache_data.json
+
+# OS
+.DS_Store
+Thumbs.db
