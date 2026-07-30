@@ -1,0 +1,8 @@
+# Next.js
+/node_modules
+/.next/
+next-env.d.ts
+
+# 빌드/캐시 산출물
+.turbo
+npm-debug.log*
