@@ -53,7 +53,7 @@ export default function AlcoholSection({ data }: { data: AlcoholResponse }) {
                   width={barW}
                   height={h}
                   rx={4}
-                  fill="var(--accent)"
+                  fill="var(--chart-1)"
                   opacity={known ? 1 : 0.35}
                 />
                 {known && (

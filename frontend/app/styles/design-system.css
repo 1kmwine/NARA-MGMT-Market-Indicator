@@ -97,6 +97,19 @@
   --text-body-sm: 400 14px/1.55 var(--font-sans);
   --text-caption: 500 12px/1.4 var(--font-sans);
   --text-mono: 400 14px/1.6 var(--font-mono);
+
+  /* ── 차트 색상 팔레트 — NARA-Design-System colors.css 원본 그대로 이식.
+     --accent(진한 브랜드 블루)와 별개로, 차트 계열색은 이 톤다운된 팔레트를 쓴다
+     (지금까지 누락돼 있어서 차트가 --accent 원색을 그대로 썼음). */
+  --chart-1: #89a9c3;
+  --chart-2: #ddc78f;
+  --chart-3: #b3b3b3;
+  --chart-4: #d6d6d6;
+  --chart-5: #6f8fa8;
+  --chart-6: #c9ad70;
+  --chart-7: #999999;
+  --chart-8: #e2e2e2;
+  --chart-neutral: #9a9a9a;
 }
 
 /* ============================================================

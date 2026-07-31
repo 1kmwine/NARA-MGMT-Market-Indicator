@@ -41,7 +41,7 @@ export default function IncomeSection({ data }: { data: IncomeResponse }) {
           const barH = bottom - barTop;
           return (
             <g key={p.label}>
-              <rect x={xAt(i) - barW / 2} y={barTop} width={barW} height={barH} rx={4} fill="var(--accent)" />
+              <rect x={xAt(i) - barW / 2} y={barTop} width={barW} height={barH} rx={4} fill="var(--chart-1)" />
               <text x={xAt(i)} y={barTop - 22} textAnchor="middle" fontSize={12} fontWeight={700} fill="var(--color-text)">
                 {valMillion.toFixed(1)}
               </text>

@@ -78,7 +78,7 @@ export default function CsiSection({ data }: { data: CsiResponse }) {
           return <line key={i} x1={0} y1={y} x2={640} y2={y} stroke="var(--color-divider)" strokeWidth={1} />;
         })}
         <line x1={0} y1={baselineY} x2={640} y2={baselineY} stroke="var(--color-text-faintest)" strokeWidth={1} strokeDasharray="3,4" />
-        <path d={buildPath(linePts)} fill="none" stroke="var(--accent)" strokeWidth={2} />
+        <path d={buildPath(linePts)} fill="none" stroke="var(--chart-1)" strokeWidth={2} />
         {pts.map((p, i) => {
           const isLabeled = labelIdxs.has(i);
           return (
@@ -88,7 +88,7 @@ export default function CsiSection({ data }: { data: CsiResponse }) {
                 cy={linePts[i].y}
                 r={isLabeled ? 4 : 2}
                 fill="var(--color-surface)"
-                stroke="var(--accent)"
+                stroke="var(--chart-1)"
                 strokeWidth={2}
               />
               {isLabeled && (
