@@ -1,17 +1,5 @@
 export type Source = "live" | "fallback";
 
-export interface FxPoint {
-  label: string;
-  usd: number;
-  eur: number | null;
-  est: boolean;
-}
-export interface FxResponse {
-  points: FxPoint[];
-  source: Source;
-  source_note: string;
-}
-
 export interface CsiPoint {
   label: string;
   value: number;

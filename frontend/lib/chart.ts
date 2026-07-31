@@ -24,16 +24,6 @@ export function pickLabelIndices(n: number, maxLabels: number): Set<number> {
   return new Set(idxs);
 }
 
-// 기본은 전년동기대비(YoY). 값이 없으면 null.
-export function yoyPct<T>(pts: T[], idx: number, back: number, key: keyof T): number | null {
-  const j = idx - back;
-  if (j < 0) return null;
-  const prev = pts[j][key];
-  const cur = pts[idx][key];
-  if (typeof prev !== "number" || typeof cur !== "number" || !prev) return null;
-  return ((cur - prev) / prev) * 100;
-}
-
 export function fmtPct(pct: number, digits = 1): string {
   return (pct >= 0 ? "▲ " : "▼ ") + Math.abs(pct).toFixed(digits) + "%";
 }

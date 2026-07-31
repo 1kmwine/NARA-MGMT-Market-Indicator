@@ -1,16 +1,10 @@
 """
-통계표코드 설정. ECOS(환율·CSI), KOSIS(가처분소득·주류) 전부 2026-07-22에 실제 확인 완료.
+통계표코드 설정. ECOS(CSI), KOSIS(가처분소득·주류) 전부 2026-07-22에 실제 확인 완료.
 코드가 잘못되거나 API 호출이 실패하면 fallback_data.py의 스냅샷 값으로 화면이 채워진다.
 """
 
 # --- ECOS (한국은행 경제통계시스템) ---
 ECOS_BASE_URL = "https://ecos.bok.or.kr/api/StatisticSearch"
-
-# 3.1.2.1. 주요국 통화의 대원화환율 (월, 평균자료) — ECOS 통계코드검색으로 확인 완료(2026-07-22)
-ECOS_FX_STAT_CODE = "731Y004"
-ECOS_FX_USD_ITEM_CODE = "0000001"  # 원/미국달러(매매기준율)
-ECOS_FX_EUR_ITEM_CODE = "0000003"  # 원/유로
-ECOS_FX_AVG_ITEM_CODE2 = "0000100"  # 평균자료 (0000200=말일자료)
 
 # 6.2.1. 소비자동향조사(전국, 월) > 소비지출전망CSI — 확인 완료(2026-07-22)
 ECOS_CSI_STAT_CODE = "511Y002"

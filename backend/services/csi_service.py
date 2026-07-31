@@ -1,21 +1,15 @@
-"""소비지출전망CSI 데이터 조회."""
+"""소비지출전망CSI 데이터 조회. 조회할 때마다 항상 ECOS에서 최신 값을 받아온다(캐시 없음)."""
 from datetime import date
 
-import cache
 import config
 import fallback_data
 from clients import ecos_client
 from clients.errors import StatisticsAPIError
 
-_CACHE_KEY = "csi_points"
 _START_MONTH = "202101"
 
 
 def get_csi() -> dict:
-    cached = cache.get(_CACHE_KEY)
-    if cached:
-        return cached
-
     try:
         end_month = date.today().strftime("%Y%m")
         rows = ecos_client.fetch_statistic(
@@ -45,5 +39,4 @@ def get_csi() -> dict:
             "source_note": "발표 시점 기준으로 확인된 값만 표시(연속 월별 시계열 아님).",
         }
 
-    cache.set(_CACHE_KEY, result)
     return result

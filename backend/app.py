@@ -14,7 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv(Path(__file__).parent / ".env")  # 실행 위치와 무관하게 backend/.env를 정확히 찾도록 절대경로 지정
 
-from services import alcohol_service, csi_service, fx_service, income_service  # noqa: E402
+from services import alcohol_service, csi_service, income_service  # noqa: E402
 
 app = FastAPI(title="선행지표 대시보드 API")
 
@@ -26,12 +26,6 @@ app.add_middleware(
     allow_methods=["GET"],
     allow_headers=["*"],
 )
-
-
-@app.get("/api/fx")
-def get_fx():
-    """원/달러, 원/유로 월평균 환율."""
-    return fx_service.get_fx_monthly()
 
 
 @app.get("/api/csi")

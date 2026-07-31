@@ -67,7 +67,7 @@ export default function CsiSection({ data }: { data: CsiResponse }) {
 
   return (
     <section id="csi" className="card section">
-      <h2>2. 소비지출전망CSI</h2>
+      <h2>1. 소비지출전망CSI</h2>
       <p className="section-insight">
         <CsiInsight pts={pts} />
       </p>

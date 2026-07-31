@@ -15,7 +15,7 @@ export default function AlcoholSection({ data }: { data: AlcoholResponse }) {
 
   return (
     <section id="alcohol" className="card section">
-      <h2>4. 주류 소비지출 (가구당 월평균, 실질)</h2>
+      <h2>3. 주류 소비지출 (가구당 월평균, 실질)</h2>
       <p className="section-insight">
         💡 주류 단독 실질소비가 {s.consecutive_decline_quarters}분기 연속 감소 중이며, {s.latest_period} 기준
         전년동기대비 <Change value={s.yoy_pct}>{fmtPct(s.yoy_pct)}</Change> 감소했습니다

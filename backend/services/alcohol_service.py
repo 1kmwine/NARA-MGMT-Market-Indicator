@@ -1,20 +1,14 @@
-"""주류 소비지출(가구당 월평균, 실질) 데이터 조회."""
-import cache
+"""주류 소비지출(가구당 월평균, 실질) 데이터 조회. 조회할 때마다 항상 KOSIS에서 최신 값을 받아온다(캐시 없음)."""
 import config
 import fallback_data
 from clients import kosis_client
 from clients.errors import StatisticsAPIError
 from utils import current_quarter
 
-_CACHE_KEY = "alcohol_yoy"
 _START_QUARTER = "202201"  # YoY 계산을 위해 표시 시작 시점보다 1년 이상 앞서 요청
 
 
 def get_alcohol() -> dict:
-    cached = cache.get(_CACHE_KEY)
-    if cached:
-        return cached
-
     try:
         alcohol_rows = kosis_client.fetch_statistic(
             org_id=config.KOSIS_ALCOHOL_ORG_ID,
@@ -41,7 +35,6 @@ def get_alcohol() -> dict:
             "source_note": fallback_data.ALCOHOL_SUMMARY["source_note"],
         }
 
-    cache.set(_CACHE_KEY, result)
     return result
 
 

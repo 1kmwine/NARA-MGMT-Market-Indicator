@@ -20,7 +20,7 @@ export default function IncomeSection({ data }: { data: IncomeResponse }) {
 
   return (
     <section id="income" className="card section">
-      <h2>3. 가구당 월평균 처분가능소득 (실질, 전년동기대비 증감률)</h2>
+      <h2>2. 가구당 월평균 처분가능소득 (실질, 전년동기대비 증감률)</h2>
       <p className="section-insight">
         💡 가처분소득(실질)이 {latest.label} 기준 전년동기대비{" "}
         <Change value={latest.yoy_pct}>{fmtPct(latest.yoy_pct, 2)}</Change> {latest.yoy_pct >= 0 ? "증가" : "감소"}

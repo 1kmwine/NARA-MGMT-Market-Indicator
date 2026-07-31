@@ -1,18 +1,17 @@
-import { getAlcohol, getCsi, getFx, getIncome } from "@/lib/api";
+import { getAlcohol, getCsi, getIncome } from "@/lib/api";
 import AlcoholSection from "./components/AlcoholSection";
 import CsiSection from "./components/CsiSection";
-import FxSection from "./components/FxSection";
 import IncomeSection from "./components/IncomeSection";
 import KpiGrid from "./components/KpiGrid";
 
-export const dynamic = "force-dynamic"; // 백엔드가 자체 캐시(24h)를 갖고 있으므로, 여기선 매번 최신 응답을 그대로 받아온다.
+export const dynamic = "force-dynamic"; // 캐시 없이, 조회할 때마다 백엔드가 ECOS/KOSIS에서 받아온 최신 값을 그대로 받아온다.
 
 export default async function Page() {
   const dataAsOf = new Date().toLocaleDateString("ko-KR", { year: "numeric", month: "long", day: "numeric" });
 
-  let fx, csi, income, alcohol;
+  let csi, income, alcohol;
   try {
-    [fx, csi, income, alcohol] = await Promise.all([getFx(), getCsi(), getIncome(), getAlcohol()]);
+    [csi, income, alcohol] = await Promise.all([getCsi(), getIncome(), getAlcohol()]);
   } catch (err) {
     return (
       <div className="wrap">
@@ -35,7 +34,7 @@ export default async function Page() {
           <span className="chip-accent">나라셀라 · 경영진 보고</span>
           <h1 style={{ marginTop: "var(--space-2)" }}>선행지표 대시보드</h1>
           <p style={{ maxWidth: 560, color: "var(--color-text-muted)" }}>
-            환율·소비심리·가계소득·주류소비 4개 선행지표를 통해 업황 변화를 조기에 포착합니다.
+            소비심리·가계소득·주류소비 3개 선행지표를 통해 업황 변화를 조기에 포착합니다.
           </p>
         </div>
         <div className="card" style={{ minWidth: 220 }}>
@@ -45,15 +44,13 @@ export default async function Page() {
       </div>
 
       <div className="nav-row">
-        <a href="#fx" className="btn-outline">환율</a>
         <a href="#csi" className="btn-outline">소비지출전망CSI</a>
         <a href="#income" className="btn-outline">가처분소득</a>
         <a href="#alcohol" className="btn-outline">주류 소비지출</a>
       </div>
 
-      <KpiGrid fx={fx} csi={csi} income={income} alcohol={alcohol} />
+      <KpiGrid csi={csi} income={income} alcohol={alcohol} />
 
-      <FxSection data={fx} />
       <CsiSection data={csi} />
       <IncomeSection data={income} />
       <AlcoholSection data={alcohol} />
