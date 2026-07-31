@@ -3,22 +3,22 @@
 .wrap {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 32px 24px;
+  padding: var(--space-6) var(--space-5);
 }
 
 .masthead {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 16px;
+  gap: var(--space-4);
   flex-wrap: wrap;
 }
 
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 16px;
-  margin: 24px 0 40px;
+  gap: var(--space-4);
+  margin: var(--space-5) 0 40px;
 }
 
 .kpi-kicker {
@@ -36,7 +36,7 @@
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.01em;
   color: var(--color-text);
-  margin-top: 4px;
+  margin-top: var(--space-1);
 }
 
 .kpi-unit {
@@ -59,21 +59,21 @@
 
 .nav-row {
   display: flex;
-  gap: 8px;
-  margin: 24px 0 16px;
+  gap: var(--space-2);
+  margin: var(--space-5) 0 var(--space-4);
   flex-wrap: wrap;
 }
 
 .section {
-  padding: 24px;
-  margin-bottom: 16px;
+  padding: var(--space-5);
+  margin-bottom: var(--space-4);
 }
 
 .section-insight {
   font-size: 14px;
   font-weight: 700;
   color: var(--color-text);
-  margin: 2px 0 4px;
+  margin: 2px 0 var(--space-1);
 }
 
 .source-line {
@@ -83,12 +83,12 @@
   align-items: center;
   gap: 6px;
   flex-wrap: wrap;
-  margin-bottom: 4px;
+  margin-bottom: var(--space-1);
 }
 
 .source-badge {
   display: inline-block;
-  padding: 2px 8px;
+  padding: 2px var(--space-2);
   border-radius: var(--radius-sm);
   font-size: 11px;
   font-weight: 700;
@@ -105,7 +105,7 @@
 .legend-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   font-size: 13px;
   color: var(--color-text-muted);
 }
@@ -119,12 +119,12 @@
 .summary-card {
   background: var(--color-surface-tint);
   max-width: 320px;
-  margin-top: 16px;
+  margin-top: var(--space-4);
 }
 
 .footer-note {
-  margin-top: 24px;
-  padding-top: 16px;
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
   border-top: 1px solid var(--color-divider);
   font-size: 12px;
   color: var(--color-text-faint);

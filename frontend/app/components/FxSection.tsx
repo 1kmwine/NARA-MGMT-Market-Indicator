@@ -39,7 +39,7 @@ export default function FxSection({ data }: { data: FxResponse }) {
         )}
       </p>
       <SourceLine note={data.source_note} source={data.source} />
-      <svg width={720} height={240} viewBox="0 0 720 240" style={{ marginTop: 16 }}>
+      <svg width={720} height={240} viewBox="0 0 720 240" style={{ marginTop: "var(--space-4)" }}>
         {[0, 1, 2, 3].map((i) => {
           const y = top + (i * (bottom - top)) / 3;
           return <line key={i} x1={0} y1={y} x2={720} y2={y} stroke="var(--color-divider)" strokeWidth={1} />;
@@ -93,7 +93,7 @@ export default function FxSection({ data }: { data: FxResponse }) {
           );
         })}
       </svg>
-      <div style={{ display: "flex", gap: 16, marginTop: 8 }}>
+      <div style={{ display: "flex", gap: "var(--space-4)", marginTop: "var(--space-2)" }}>
         <div className="legend-row">
           <span className="legend-dot" style={{ background: "var(--accent)" }} />
           USD/KRW 월평균 (원)

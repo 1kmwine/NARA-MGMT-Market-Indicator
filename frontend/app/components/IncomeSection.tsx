@@ -27,7 +27,7 @@ export default function IncomeSection({ data }: { data: IncomeResponse }) {
         했습니다 (가구당 월평균 {toMillion(latest.value_krw)})
       </p>
       <SourceLine note={data.source_note} source={data.source} />
-      <svg width={width} height={210} viewBox={`0 0 ${width} 210`} style={{ marginTop: 16 }}>
+      <svg width={width} height={210} viewBox={`0 0 ${width} 210`} style={{ marginTop: "var(--space-4)" }}>
         <text x={right + 20} y={12} textAnchor="end" fontSize={11} fill="var(--color-text-faint)">
           [단위: 백만원]
         </text>

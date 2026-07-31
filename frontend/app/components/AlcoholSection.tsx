@@ -34,7 +34,7 @@ export default function AlcoholSection({ data }: { data: AlcoholResponse }) {
       </div>
 
       <div style={{ marginTop: 20 }}>
-        <div className="section-title" style={{ margin: "0 0 8px" }}>
+        <div className="section-title" style={{ margin: "0 0 var(--space-2)" }}>
           분기별 전년동기대비 증감률 추이
         </div>
         <svg width={width} height={210} viewBox={`0 0 ${width} 210`}>

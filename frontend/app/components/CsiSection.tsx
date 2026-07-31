@@ -72,7 +72,7 @@ export default function CsiSection({ data }: { data: CsiResponse }) {
         <CsiInsight pts={pts} />
       </p>
       <SourceLine note={data.source_note} source={data.source} />
-      <svg width={640} height={210} viewBox="0 0 640 210" style={{ marginTop: 16 }}>
+      <svg width={640} height={210} viewBox="0 0 640 210" style={{ marginTop: "var(--space-4)" }}>
         {[0, 1, 2].map((i) => {
           const y = top + (i * (bottom - top)) / 2;
           return <line key={i} x1={0} y1={y} x2={640} y2={y} stroke="var(--color-divider)" strokeWidth={1} />;
