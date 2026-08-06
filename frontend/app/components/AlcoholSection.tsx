@@ -1,17 +1,31 @@
-import { changeColor, fmtPct } from "@/lib/chart";
+"use client";
+
+import { changeColor, fmtPct, scaleY } from "@/lib/chart";
+import { useContainerWidth } from "@/lib/useContainerWidth";
 import type { AlcoholResponse } from "@/lib/types";
 import Change from "./Change";
 import SourceLine from "./SourceLine";
 
+// 📝 아래 문구는 자유롭게 수정하세요 — 차트 하단에 그대로 표시됩니다.
+const NOTE =
+  "막대 높이는 분기별 주류 단독 실질 소비지출 금액(원) 그대로이며, 괄호 안 %는 " +
+  "그 금액의 전년동기대비 증감률입니다.";
+
 export default function AlcoholSection({ data }: { data: AlcoholResponse }) {
   const s = data.summary;
   const points = data.points;
+  const { ref, width } = useContainerWidth(900);
 
-  const width = 640, top = 64, baselineY = 170, left = 40, right = 600;
-  const maxAbs = Math.max(...points.map((p) => Math.abs(p.yoy_pct)), 1);
-  const pxPerPct = (baselineY - top) / maxAbs;
+  const height = 210;
+  const top = 64, baselineY = 170, left = 50, right = width - 30;
   const xAt = (i: number) => left + (i / Math.max(points.length - 1, 1)) * (right - left);
-  const barW = 34;
+  const barW = Math.min(40, Math.max(20, (right - left) / points.length - 12));
+
+  const knownVals = points.filter((p) => p.known !== false).map((p) => p.value_krw);
+  const min = Math.min(...knownVals);
+  const max = Math.max(...knownVals);
+  const pad = Math.max((max - min) * 0.15, 1);
+  const scaleMin = min - pad, scaleMax = max + pad;
 
   return (
     <section id="alcohol" className="card section">
@@ -33,55 +47,59 @@ export default function AlcoholSection({ data }: { data: AlcoholResponse }) {
         </div>
       </div>
 
-      <div style={{ marginTop: 20 }}>
+      <div style={{ marginTop: "var(--space-5)" }}>
         <div className="section-title" style={{ margin: "0 0 var(--space-2)" }}>
-          분기별 전년동기대비 증감률 추이
+          분기별 실질 소비지출 금액 추이
         </div>
-        <svg width={width} height={210} viewBox={`0 0 ${width} 210`}>
-          <text x={right + 10} y={16} textAnchor="end" fontSize={11} fill="var(--color-text-faint)">
-            [단위: 원]
-          </text>
-          <line x1={left - 10} y1={baselineY} x2={right + 10} y2={baselineY} stroke="var(--color-text-faintest)" strokeWidth={1.5} />
-          {points.map((p, i) => {
-            const known = p.known !== false;
-            const h = Math.max(2, Math.round(Math.abs(p.yoy_pct) * pxPerPct));
-            return (
-              <g key={p.label}>
-                <rect
-                  x={xAt(i) - barW / 2}
-                  y={baselineY - h}
-                  width={barW}
-                  height={h}
-                  rx={4}
-                  fill="var(--chart-1)"
-                  opacity={known ? 1 : 0.35}
-                />
-                {known && (
-                  <>
-                    <text x={xAt(i)} y={baselineY - h - 24} textAnchor="middle" fontSize={12} fontWeight={700} fill="var(--color-text)">
-                      {p.value_krw.toLocaleString("ko-KR")}
-                    </text>
-                    <text
-                      x={xAt(i)}
-                      y={baselineY - h - 7}
-                      textAnchor="middle"
-                      fontSize={9.5}
-                      fontWeight={600}
-                      fill={changeColor(p.yoy_pct)}
-                    >
-                      ({p.yoy_pct >= 0 ? "▲" : "▼"}
-                      {Math.abs(p.yoy_pct).toFixed(1)}%)
-                    </text>
-                  </>
-                )}
-                <text x={xAt(i)} y={baselineY + 20} textAnchor="middle" fontSize={11} fill="var(--color-text-faint)">
-                  {p.label}
-                </text>
-              </g>
-            );
-          })}
-        </svg>
+        <div ref={ref}>
+          <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ display: "block", fontFamily: "var(--font-sans)" }}>
+            <text x={right + 10} y={16} textAnchor="end" fontSize={11} fill="var(--color-text-faint)">
+              [단위: 원]
+            </text>
+            <line x1={left - 10} y1={baselineY} x2={right + 10} y2={baselineY} stroke="var(--color-text-faintest)" strokeWidth={1.5} />
+            {points.map((p, i) => {
+              const known = p.known !== false;
+              const barTop = known ? scaleY(p.value_krw, scaleMin, scaleMax, top, baselineY) : baselineY - 2;
+              const h = known ? baselineY - barTop : 2;
+              return (
+                <g key={p.label}>
+                  <rect
+                    x={xAt(i) - barW / 2}
+                    y={baselineY - h}
+                    width={barW}
+                    height={h}
+                    rx={4}
+                    fill="var(--chart-1)"
+                    opacity={known ? 1 : 0.35}
+                  />
+                  {known && (
+                    <>
+                      <text x={xAt(i)} y={baselineY - h - 24} textAnchor="middle" fontSize={12} fontWeight={700} fill="var(--color-text)">
+                        {p.value_krw.toLocaleString("ko-KR")}
+                      </text>
+                      <text
+                        x={xAt(i)}
+                        y={baselineY - h - 7}
+                        textAnchor="middle"
+                        fontSize={10}
+                        fontWeight={600}
+                        fill={changeColor(p.yoy_pct)}
+                      >
+                        ({p.yoy_pct >= 0 ? "▲" : "▼"}
+                        {Math.abs(p.yoy_pct).toFixed(1)}%)
+                      </text>
+                    </>
+                  )}
+                  <text x={xAt(i)} y={baselineY + 20} textAnchor="middle" fontSize={11} fill="var(--color-text-faint)">
+                    {p.label}
+                  </text>
+                </g>
+              );
+            })}
+          </svg>
+        </div>
       </div>
+      <p className="field-src" style={{ marginTop: "var(--space-2)" }}>{NOTE}</p>
     </section>
   );
 }
