@@ -7,12 +7,25 @@ import type { IncomeResponse } from "@/lib/types";
 import Change from "./Change";
 import SourceLine from "./SourceLine";
 
-// 📝 아래 문구는 자유롭게 수정하세요 — 차트 하단에 그대로 표시됩니다.
+// 📝 아래 두 값은 자유롭게 수정하세요.
+// INSIGHT_OVERRIDE를 채우면(빈 문자열이 아니면) 자동 생성되는 요약 문장 대신 이 문구가 표시됩니다.
+// 비워두면("") 다시 자동 생성 문구로 돌아갑니다.
+const INSIGHT_OVERRIDE = "";
 const NOTE =
   "증감율 그래프의 0% 선은 전년 동기와 동일한 수준(변화 없음)을 의미합니다. " +
   "절대금액 그래프의 막대 높이는 가구당 월평균 처분가능소득(실질) 금액 그대로입니다.";
 
 type ViewMode = "yoy" | "amount";
+
+function IncomeInsight({ latest }: { latest: IncomeResponse["points"][number] }) {
+  return (
+    <>
+      가처분소득(실질)이 {latest.label} 기준 전년동기대비{" "}
+      <Change value={latest.yoy_pct}>{fmtPct(latest.yoy_pct, 2)}</Change> {latest.yoy_pct >= 0 ? "증가" : "감소"}
+      했습니다 (가구당 월평균 {toMillion(latest.value_krw)})
+    </>
+  );
+}
 
 export default function IncomeSection({ data }: { data: IncomeResponse }) {
   const pts = data.points;
@@ -28,12 +41,7 @@ export default function IncomeSection({ data }: { data: IncomeResponse }) {
   return (
     <section id="income" className="card section">
       <h2>2. 가구당 월평균 처분가능소득 (실질, 전년동기대비 증감률)</h2>
-      <p className="section-insight">
-        💡 가처분소득(실질)이 {latest.label} 기준 전년동기대비{" "}
-        <Change value={latest.yoy_pct}>{fmtPct(latest.yoy_pct, 2)}</Change> {latest.yoy_pct >= 0 ? "증가" : "감소"}
-        했습니다 (가구당 월평균 {toMillion(latest.value_krw)})
-      </p>
-      <SourceLine note={data.source_note} source={data.source} />
+      <p className="section-insight">💡 {INSIGHT_OVERRIDE.trim() || <IncomeInsight latest={latest} />}</p>
 
       <div style={{ display: "flex", gap: "var(--space-2)", marginTop: "var(--space-3)" }}>
         <button
@@ -59,6 +67,7 @@ export default function IncomeSection({ data }: { data: IncomeResponse }) {
           <IncomeAmountChart pts={pts} width={width} height={height} top={top} bottom={bottom} left={left} right={right} xAt={xAt} barW={barW} />
         )}
       </div>
+      <SourceLine note={data.source_note} source={data.source} />
       <p className="field-src" style={{ marginTop: "var(--space-2)" }}>{NOTE}</p>
     </section>
   );

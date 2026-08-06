@@ -6,10 +6,22 @@ import type { AlcoholResponse } from "@/lib/types";
 import Change from "./Change";
 import SourceLine from "./SourceLine";
 
-// 📝 아래 문구는 자유롭게 수정하세요 — 차트 하단에 그대로 표시됩니다.
+// 📝 아래 두 값은 자유롭게 수정하세요.
+// INSIGHT_OVERRIDE를 채우면(빈 문자열이 아니면) 자동 생성되는 요약 문장 대신 이 문구가 표시됩니다.
+// 비워두면("") 다시 자동 생성 문구로 돌아갑니다.
+const INSIGHT_OVERRIDE = "";
 const NOTE =
   "막대 높이는 분기별 주류 단독 실질 소비지출 금액(원) 그대로이며, 괄호 안 %는 " +
   "그 금액의 전년동기대비 증감률입니다.";
+
+function AlcoholInsight({ s }: { s: AlcoholResponse["summary"] }) {
+  return (
+    <>
+      주류 단독 실질소비가 {s.consecutive_decline_quarters}분기 연속 감소 중이며, {s.latest_period} 기준
+      전년동기대비 <Change value={s.yoy_pct}>{fmtPct(s.yoy_pct)}</Change> 감소했습니다
+    </>
+  );
+}
 
 export default function AlcoholSection({ data }: { data: AlcoholResponse }) {
   const s = data.summary;
@@ -30,11 +42,7 @@ export default function AlcoholSection({ data }: { data: AlcoholResponse }) {
   return (
     <section id="alcohol" className="card section">
       <h2>3. 주류 소비지출 (가구당 월평균, 실질)</h2>
-      <p className="section-insight">
-        💡 주류 단독 실질소비가 {s.consecutive_decline_quarters}분기 연속 감소 중이며, {s.latest_period} 기준
-        전년동기대비 <Change value={s.yoy_pct}>{fmtPct(s.yoy_pct)}</Change> 감소했습니다
-      </p>
-      <SourceLine note={data.source_note} source={data.source} />
+      <p className="section-insight">💡 {INSIGHT_OVERRIDE.trim() || <AlcoholInsight s={s} />}</p>
 
       <div className="card summary-card">
         <div className="kpi-kicker">{s.latest_period} 주류 단독 실질 소비지출 (담배 제외)</div>
@@ -99,6 +107,7 @@ export default function AlcoholSection({ data }: { data: AlcoholResponse }) {
           </svg>
         </div>
       </div>
+      <SourceLine note={data.source_note} source={data.source} />
       <p className="field-src" style={{ marginTop: "var(--space-2)" }}>{NOTE}</p>
     </section>
   );

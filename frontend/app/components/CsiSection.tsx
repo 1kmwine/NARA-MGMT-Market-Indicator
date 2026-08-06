@@ -7,7 +7,10 @@ import type { CsiResponse } from "@/lib/types";
 import Change from "./Change";
 import SourceLine from "./SourceLine";
 
-// 📝 아래 문구는 자유롭게 수정하세요 — 차트 하단에 그대로 표시됩니다.
+// 📝 아래 두 값은 자유롭게 수정하세요.
+// INSIGHT_OVERRIDE를 채우면(빈 문자열이 아니면) 자동 생성되는 요약 문장 대신 이 문구가 표시됩니다.
+// 비워두면("") 다시 자동 생성 문구로 돌아갑니다.
+const INSIGHT_OVERRIDE = "";
 const NOTE =
   "기준선(100)은 특정 시점이 아니라 조사 방식 자체의 중립점입니다. 지수가 100보다 크면 " +
   "\"향후 소비지출을 늘리겠다\"는 가구가 더 많다는 뜻이고, 100보다 작으면 \"줄이겠다\"는 가구가 더 많다는 뜻입니다.";
@@ -23,7 +26,7 @@ function CsiInsight({ pts }: { pts: CsiResponse["points"] }) {
   if (yoy != null && Math.abs(yoy) >= 1) {
     return (
       <>
-        💡 소비지출전망CSI가 {latest.label} {latest.value}pt로 전년동월대비{" "}
+        소비지출전망CSI가 {latest.label} {latest.value}pt로 전년동월대비{" "}
         <Change value={yoy}>
           {yoy >= 0 ? "▲" : "▼"} {Math.abs(yoy)}p
         </Change>{" "}
@@ -47,7 +50,7 @@ function CsiInsight({ pts }: { pts: CsiResponse["points"] }) {
   if (recentIdx !== n - 1 && Math.abs(recentDiff) >= 1) {
     return (
       <>
-        💡 소비지출전망CSI가 {latest.label} {latest.value}pt로 전년동월과 비슷한 수준이나, 최근 3개월간{" "}
+        소비지출전망CSI가 {latest.label} {latest.value}pt로 전년동월과 비슷한 수준이나, 최근 3개월간{" "}
         <Change value={recentDiff}>
           {recentDiff >= 0 ? "▲" : "▼"} {Math.abs(recentDiff)}p
         </Change>{" "}
@@ -56,11 +59,7 @@ function CsiInsight({ pts }: { pts: CsiResponse["points"] }) {
     );
   }
 
-  return (
-    <>
-      💡 소비지출전망CSI가 {latest.label} {latest.value}pt로 뚜렷한 변동 없이 보합권을 유지하고 있습니다
-    </>
-  );
+  return <>소비지출전망CSI가 {latest.label} {latest.value}pt로 뚜렷한 변동 없이 보합권을 유지하고 있습니다</>;
 }
 
 export default function CsiSection({ data }: { data: CsiResponse }) {
@@ -82,10 +81,7 @@ export default function CsiSection({ data }: { data: CsiResponse }) {
   return (
     <section id="csi" className="card section">
       <h2>1. 소비지출전망CSI</h2>
-      <p className="section-insight">
-        <CsiInsight pts={pts} />
-      </p>
-      <SourceLine note={data.source_note} source={data.source} />
+      <p className="section-insight">💡 {INSIGHT_OVERRIDE.trim() || <CsiInsight pts={pts} />}</p>
       <div ref={ref} style={{ marginTop: "var(--space-4)", position: "relative" }}>
         <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ display: "block", fontFamily: "var(--font-sans)" }}>
           {[0, 1, 2].map((i) => {
@@ -153,6 +149,7 @@ export default function CsiSection({ data }: { data: CsiResponse }) {
           </div>
         )}
       </div>
+      <SourceLine note={data.source_note} source={data.source} />
       <p className="field-src" style={{ marginTop: "var(--space-2)" }}>{NOTE}</p>
     </section>
   );
