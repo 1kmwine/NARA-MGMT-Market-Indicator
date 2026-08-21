@@ -11,6 +11,8 @@ export interface CsiResponse {
   points: CsiPoint[];
   source: Source;
   source_note: string;
+  /** DB에 적재된 시각(ISO). DB를 못 읽어 API를 직접 호출한 경우에만 null. */
+  collected_at: string | null;
 }
 
 export interface IncomePoint {
@@ -22,6 +24,7 @@ export interface IncomeResponse {
   points: IncomePoint[];
   source: Source;
   source_note: string;
+  collected_at: string | null;
 }
 
 export interface AlcoholPoint {
@@ -42,4 +45,5 @@ export interface AlcoholResponse {
   summary: AlcoholSummary;
   source: Source;
   source_note: string;
+  collected_at: string | null;
 }

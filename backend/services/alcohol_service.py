@@ -1,14 +1,24 @@
-"""주류 소비지출(가구당 월평균, 실질) 데이터 조회. 조회할 때마다 항상 KOSIS에서 최신 값을 받아온다(캐시 없음)."""
+"""주류 소비지출(가구당 월평균, 실질) 데이터 조회.
+
+평소에는 DB(leading_indicator.indicator_value)에 적재된 값을 읽는다 — 매일 08:00 etl.py가 채운다.
+DB가 비었거나 접속이 안 되면 KOSIS를 직접 호출하고, 그것도 실패하면 스냅샷으로 내려간다.
+"""
 import config
 import fallback_data
+import indicator_repo
 from clients import kosis_client
 from clients.errors import StatisticsAPIError
 from utils import current_quarter
 
 _START_QUARTER = "202201"  # YoY 계산을 위해 표시 시작 시점보다 1년 이상 앞서 요청
+_LIVE_NOTE = "통계청 KOSIS 가계동향조사(실질)"
 
 
 def get_alcohol() -> dict:
+    stored = indicator_repo.get_quarterly("alcohol", _LIVE_NOTE, with_known=True)
+    if stored:
+        return {**stored, "summary": _build_summary(stored["points"])}
+
     try:
         alcohol_rows = kosis_client.fetch_statistic(
             org_id=config.KOSIS_ALCOHOL_ORG_ID,
@@ -25,7 +35,8 @@ def get_alcohol() -> dict:
             "points": points,
             "summary": summary,
             "source": "live",
-            "source_note": "통계청 KOSIS 가계동향조사(실질) 실시간 연동",
+            "source_note": f"{_LIVE_NOTE} 실시간 연동(DB 미적재 상태)",
+            "collected_at": None,
         }
     except StatisticsAPIError:
         result = {
@@ -33,6 +44,7 @@ def get_alcohol() -> dict:
             "summary": fallback_data.ALCOHOL_SUMMARY,
             "source": "fallback",
             "source_note": fallback_data.ALCOHOL_SUMMARY["source_note"],
+            "collected_at": None,
         }
 
     return result

@@ -4,11 +4,20 @@ import CsiSection from "./components/CsiSection";
 import IncomeSection from "./components/IncomeSection";
 import KpiGrid from "./components/KpiGrid";
 
-export const dynamic = "force-dynamic"; // 캐시 없이, 조회할 때마다 백엔드가 ECOS/KOSIS에서 받아온 최신 값을 그대로 받아온다.
+export const dynamic = "force-dynamic"; // 캐시 없이, 매번 백엔드(→DB)에서 가장 최근 적재분을 읽는다.
+
+/** DB 적재 시각을 "2026년 8월 21일 08:00 적재"로 표기. 적재 전이면 조회 시각으로 대체. */
+function formatDataAsOf(collectedAt: string | null): string {
+  if (!collectedAt) {
+    return `${new Date().toLocaleDateString("ko-KR", { year: "numeric", month: "long", day: "numeric" })} 조회`;
+  }
+  const at = new Date(collectedAt);
+  const day = at.toLocaleDateString("ko-KR", { year: "numeric", month: "long", day: "numeric" });
+  const time = at.toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit", hour12: false });
+  return `${day} ${time} 적재`;
+}
 
 export default async function Page() {
-  const dataAsOf = new Date().toLocaleDateString("ko-KR", { year: "numeric", month: "long", day: "numeric" });
-
   let csi, income, alcohol;
   try {
     [csi, income, alcohol] = await Promise.all([getCsi(), getIncome(), getAlcohol()]);
@@ -30,6 +39,8 @@ export default async function Page() {
   // 인사이트 편집 문구는 부가 기능이라, 조회에 실패해도 대시보드 자체는 그대로 뜨게 한다.
   const insights = await getInsights().catch(() => ({ csi: "", income: "", alcohol: "" }));
 
+  const dataAsOf = formatDataAsOf(csi.collected_at);
+
   return (
     <div className="wrap">
       <div className="masthead">
@@ -42,7 +53,7 @@ export default async function Page() {
         </div>
         <div className="card" style={{ minWidth: 220 }}>
           <div className="kpi-kicker">데이터 기준</div>
-          <div style={{ marginTop: "var(--space-1)" }}>{dataAsOf} 조회</div>
+          <div style={{ marginTop: "var(--space-1)" }}>{dataAsOf}</div>
         </div>
       </div>
 
@@ -59,9 +70,10 @@ export default async function Page() {
       <AlcoholSection data={alcohol} insightOverride={insights.alcohol} />
 
       <div className="footer-note">
-        <strong style={{ color: "var(--color-text)" }}>데이터 갱신 안내</strong> — 이 화면은 백엔드(FastAPI, <code>/api/*</code>)에서
-        데이터를 받아옵니다. 각 카드의 <span className="source-badge live">실시간</span> 배지는 ECOS/KOSIS API 연동 결과,{" "}
-        <span className="source-badge fallback">스냅샷</span> 배지는 통계코드 설정 전 임시 값임을 의미합니다.
+        <strong style={{ color: "var(--color-text)" }}>데이터 갱신 안내</strong> — 지표는 <strong>매일 오전 8시</strong>에 ECOS/KOSIS에서
+        자동 수집해 사내 DB에 적재하며, 이 화면은 그 적재분을 읽어 보여줍니다(조회할 때마다 외부 API를 호출하지 않습니다).
+        각 카드의 <span className="source-badge live">실시간</span> 배지는 통계 API에서 받은 실측치,{" "}
+        <span className="source-badge fallback">스냅샷</span> 배지는 API 장애로 임시 값이 적재됐음을 의미합니다.
       </div>
     </div>
   );

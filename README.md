@@ -45,7 +45,57 @@ cd backend
 ## 폴더 구조
 
 ```
-backend/    FastAPI 서버 — ECOS/KOSIS 호출(조회 시마다 항상 최신값), /api/* 라우트
-frontend/   실제 대시보드 화면 (index.html, app.js, styles.css)
+backend/    FastAPI 서버 — /api/* 라우트(DB 조회) + etl.py(매일 08시 ECOS/KOSIS 수집·적재)
+frontend/   실제 대시보드 화면 (Next.js)
 dashboard_design/   원본 디자인 시안 (참고용, 실행되지 않음)
 ```
+
+## 5. 데이터 흐름 — 매일 08시 수집, 화면은 DB 조회
+
+```
+[매일 08:00 cron]  etl.py  →  ECOS/KOSIS API  →  MariaDB(leading_indicator)
+[사용자 접속]      Next.js  →  FastAPI /api/*  →  MariaDB(leading_indicator)
+```
+
+화면을 열 때마다 외부 통계 API를 호출하지 않는다. 하루 한 번 적재한 값을 읽어 주기 때문에
+KOSIS/ECOS가 느리거나 죽어도 대시보드는 그대로 뜬다.
+
+**단계별 안전장치** — `services/*.py`는 아래 순서로 내려간다.
+1. DB(`indicator_value`)에 적재된 값 — 정상 경로
+2. DB가 비었거나(최초 배포 직후) 접속 불가 → ECOS/KOSIS 직접 호출
+3. 그것도 실패 → `fallback_data.py` 스냅샷
+
+### 스키마 (테스트 서버 `192.168.47.105:3306`)
+
+블록 전용 **`leading_indicator`** 스키마를 쓴다 (허브 아키텍처의 "블록별 스키마 분리" 원칙 —
+`클로드/ARCHITECTURE.md` §4·§7 참고).
+
+| 테이블 | 내용 |
+|---|---|
+| `indicator` | 지표 마스터 3건 (csi / income / alcohol) — 출처 기관·통계표코드·단위·주기 |
+| `indicator_value` | 지표 시계열 실측치. `(indicator_code, period)` 유니크라 몇 번을 돌려도 덮어쓰기만 됨 |
+| `fetch_log` | 수집 이력 — 언제 몇 건 넣었는지, 실패했다면 사유 |
+
+`indicator_value.origin`이 `live`면 통계 API 실측치, `fallback`이면 API 장애로 스냅샷이 적재된 것이다.
+화면의 실시간/스냅샷 배지가 이 값을 그대로 보여준다.
+
+접속 계정은 `backend/.env`의 `DB_USER`/`DB_PASSWORD`에서 읽는다.
+실제 값은 `클로드/CREDENTIALS.strategy.local.md`에 있고, `.env`는 커밋되지 않는다.
+
+### 수동 실행
+
+```bash
+cd backend
+.venv\Scripts\python etl.py --init   # 스키마/테이블 생성 (여러 번 실행해도 안전)
+.venv\Scripts\python etl.py          # ECOS/KOSIS에서 받아 적재
+.venv\Scripts\python etl.py --show   # 적재 현황 확인
+```
+
+### 자동 수집 (개발서버 root crontab)
+
+```
+0 8 * * * docker compose -f /var/www/NARA-MGMT-Market-Indicator/docker-compose.yml exec -T backend python etl.py >> /var/log/market-indicator-etl.log 2>&1
+```
+
+같은 서버의 다른 블록(brand-sales, import-data)과 동일한 방식이다.
+실패해도 이전 적재분이 DB에 그대로 남아 있어 화면은 계속 뜬다 — `fetch_log`와 위 로그 파일에서 원인을 본다.
