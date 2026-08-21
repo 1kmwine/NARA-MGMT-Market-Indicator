@@ -3,6 +3,10 @@ services:
     build: ./backend
     env_file:
       - ./backend/.env
+    volumes:
+      # 사용자가 화면에서 편집한 인사이트 문구(backend/data/insight_overrides.json)가
+      # 코드 재배포(컨테이너 재생성)에도 사라지지 않도록 호스트 디렉터리를 마운트.
+      - ./backend/data:/app/data
     restart: unless-stopped
     # 외부에 포트를 노출하지 않는다 — web 컨테이너만 내부 네트워크로 호출.
 

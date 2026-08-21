@@ -2,4 +2,4 @@
 __pycache__/
 *.pyc
 .venv/
-cache_data.json
+data/insight_overrides.json

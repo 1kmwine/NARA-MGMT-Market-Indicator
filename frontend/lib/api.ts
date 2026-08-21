@@ -1,4 +1,4 @@
-import type { AlcoholResponse, CsiResponse, IncomeResponse } from "./types";
+import type { AlcoholResponse, CsiResponse, IncomeResponse, Insights } from "./types";
 
 // 배포 환경(Docker Compose)에서는 서비스명 backend:8000, 로컬 개발에서는 localhost:8000.
 const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:8000";
@@ -12,3 +12,4 @@ async function getJSON<T>(path: string): Promise<T> {
 export const getCsi = () => getJSON<CsiResponse>("/api/csi");
 export const getIncome = () => getJSON<IncomeResponse>("/api/income");
 export const getAlcohol = () => getJSON<AlcoholResponse>("/api/alcohol");
+export const getInsights = () => getJSON<Insights>("/api/insights");

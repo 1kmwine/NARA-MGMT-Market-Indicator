@@ -1,4 +1,4 @@
-import { getAlcohol, getCsi, getIncome } from "@/lib/api";
+import { getAlcohol, getCsi, getIncome, getInsights } from "@/lib/api";
 import AlcoholSection from "./components/AlcoholSection";
 import CsiSection from "./components/CsiSection";
 import IncomeSection from "./components/IncomeSection";
@@ -27,6 +27,9 @@ export default async function Page() {
     );
   }
 
+  // 인사이트 편집 문구는 부가 기능이라, 조회에 실패해도 대시보드 자체는 그대로 뜨게 한다.
+  const insights = await getInsights().catch(() => ({ csi: "", income: "", alcohol: "" }));
+
   return (
     <div className="wrap">
       <div className="masthead">
@@ -51,9 +54,9 @@ export default async function Page() {
 
       <KpiGrid csi={csi} income={income} alcohol={alcohol} />
 
-      <CsiSection data={csi} />
-      <IncomeSection data={income} />
-      <AlcoholSection data={alcohol} />
+      <CsiSection data={csi} insightOverride={insights.csi} />
+      <IncomeSection data={income} insightOverride={insights.income} />
+      <AlcoholSection data={alcohol} insightOverride={insights.alcohol} />
 
       <div className="footer-note">
         <strong style={{ color: "var(--color-text)" }}>데이터 갱신 안내</strong> — 이 화면은 백엔드(FastAPI, <code>/api/*</code>)에서

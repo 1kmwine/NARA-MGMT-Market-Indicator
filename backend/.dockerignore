@@ -3,4 +3,4 @@ __pycache__
 **/__pycache__
 *.pyc
 .env
-cache_data.json
+data/insight_overrides.json

@@ -5,12 +5,11 @@ import { buildPath, pickLabelIndices, scaleY } from "@/lib/chart";
 import { useContainerWidth } from "@/lib/useContainerWidth";
 import type { CsiResponse } from "@/lib/types";
 import Change from "./Change";
+import EditableInsight from "./EditableInsight";
 import SourceLine from "./SourceLine";
 
-// 📝 아래 두 값은 자유롭게 수정하세요.
-// INSIGHT_OVERRIDE를 채우면(빈 문자열이 아니면) 자동 생성되는 요약 문장 대신 이 문구가 표시됩니다.
-// 비워두면("") 다시 자동 생성 문구로 돌아갑니다.
-const INSIGHT_OVERRIDE = "";
+// 📝 아래 문구는 자유롭게 수정하세요 — 차트 하단에 그대로 표시됩니다.
+// (상단 인사이트 요약문은 화면의 연필 아이콘을 눌러 직접 편집할 수 있습니다.)
 const NOTE =
   "기준선(100)은 특정 시점이 아니라 조사 방식 자체의 중립점입니다. 지수가 100보다 크면 " +
   "\"향후 소비지출을 늘리겠다\"는 가구가 더 많다는 뜻이고, 100보다 작으면 \"줄이겠다\"는 가구가 더 많다는 뜻입니다.";
@@ -62,7 +61,7 @@ function CsiInsight({ pts }: { pts: CsiResponse["points"] }) {
   return <>소비지출전망CSI가 {latest.label} {latest.value}pt로 뚜렷한 변동 없이 보합권을 유지하고 있습니다</>;
 }
 
-export default function CsiSection({ data }: { data: CsiResponse }) {
+export default function CsiSection({ data, insightOverride }: { data: CsiResponse; insightOverride: string }) {
   const pts = data.points;
   const { ref, width } = useContainerWidth(900);
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
@@ -81,7 +80,7 @@ export default function CsiSection({ data }: { data: CsiResponse }) {
   return (
     <section id="csi" className="card section">
       <h2>1. 소비지출전망CSI</h2>
-      <p className="section-insight">💡 {INSIGHT_OVERRIDE.trim() || <CsiInsight pts={pts} />}</p>
+      <EditableInsight section="csi" override={insightOverride} fallback={<CsiInsight pts={pts} />} />
       <div ref={ref} style={{ marginTop: "var(--space-4)", position: "relative" }}>
         <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ display: "block", fontFamily: "var(--font-sans)" }}>
           {[0, 1, 2].map((i) => {

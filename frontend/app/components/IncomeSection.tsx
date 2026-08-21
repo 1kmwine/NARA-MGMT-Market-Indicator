@@ -5,12 +5,11 @@ import { buildPath, changeColor, fmtPct, scaleY, toMillion } from "@/lib/chart";
 import { useContainerWidth } from "@/lib/useContainerWidth";
 import type { IncomeResponse } from "@/lib/types";
 import Change from "./Change";
+import EditableInsight from "./EditableInsight";
 import SourceLine from "./SourceLine";
 
-// 📝 아래 두 값은 자유롭게 수정하세요.
-// INSIGHT_OVERRIDE를 채우면(빈 문자열이 아니면) 자동 생성되는 요약 문장 대신 이 문구가 표시됩니다.
-// 비워두면("") 다시 자동 생성 문구로 돌아갑니다.
-const INSIGHT_OVERRIDE = "";
+// 📝 아래 문구는 자유롭게 수정하세요 — 차트 하단에 그대로 표시됩니다.
+// (상단 인사이트 요약문은 화면의 연필 아이콘을 눌러 직접 편집할 수 있습니다.)
 const NOTE =
   "증감율 그래프의 0% 선은 전년 동기와 동일한 수준(변화 없음)을 의미합니다. " +
   "절대금액 그래프의 막대 높이는 가구당 월평균 처분가능소득(실질) 금액 그대로입니다.";
@@ -27,7 +26,7 @@ function IncomeInsight({ latest }: { latest: IncomeResponse["points"][number] })
   );
 }
 
-export default function IncomeSection({ data }: { data: IncomeResponse }) {
+export default function IncomeSection({ data, insightOverride }: { data: IncomeResponse; insightOverride: string }) {
   const pts = data.points;
   const latest = pts[pts.length - 1];
   const { ref, width } = useContainerWidth(900);
@@ -41,7 +40,7 @@ export default function IncomeSection({ data }: { data: IncomeResponse }) {
   return (
     <section id="income" className="card section">
       <h2>2. 가구당 월평균 처분가능소득 (실질, 전년동기대비 증감률)</h2>
-      <p className="section-insight">💡 {INSIGHT_OVERRIDE.trim() || <IncomeInsight latest={latest} />}</p>
+      <EditableInsight section="income" override={insightOverride} fallback={<IncomeInsight latest={latest} />} />
 
       <div style={{ display: "flex", gap: "var(--space-2)", marginTop: "var(--space-3)" }}>
         <button

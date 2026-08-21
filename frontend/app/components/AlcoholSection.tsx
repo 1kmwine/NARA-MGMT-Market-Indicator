@@ -4,12 +4,11 @@ import { changeColor, fmtPct, scaleY } from "@/lib/chart";
 import { useContainerWidth } from "@/lib/useContainerWidth";
 import type { AlcoholResponse } from "@/lib/types";
 import Change from "./Change";
+import EditableInsight from "./EditableInsight";
 import SourceLine from "./SourceLine";
 
-// 📝 아래 두 값은 자유롭게 수정하세요.
-// INSIGHT_OVERRIDE를 채우면(빈 문자열이 아니면) 자동 생성되는 요약 문장 대신 이 문구가 표시됩니다.
-// 비워두면("") 다시 자동 생성 문구로 돌아갑니다.
-const INSIGHT_OVERRIDE = "";
+// 📝 아래 문구는 자유롭게 수정하세요 — 차트 하단에 그대로 표시됩니다.
+// (상단 인사이트 요약문은 화면의 연필 아이콘을 눌러 직접 편집할 수 있습니다.)
 const NOTE =
   "막대 높이는 분기별 주류 단독 실질 소비지출 금액(원) 그대로이며, 괄호 안 %는 " +
   "그 금액의 전년동기대비 증감률입니다.";
@@ -23,7 +22,7 @@ function AlcoholInsight({ s }: { s: AlcoholResponse["summary"] }) {
   );
 }
 
-export default function AlcoholSection({ data }: { data: AlcoholResponse }) {
+export default function AlcoholSection({ data, insightOverride }: { data: AlcoholResponse; insightOverride: string }) {
   const s = data.summary;
   const points = data.points;
   const { ref, width } = useContainerWidth(900);
@@ -42,7 +41,7 @@ export default function AlcoholSection({ data }: { data: AlcoholResponse }) {
   return (
     <section id="alcohol" className="card section">
       <h2>3. 주류 소비지출 (가구당 월평균, 실질)</h2>
-      <p className="section-insight">💡 {INSIGHT_OVERRIDE.trim() || <AlcoholInsight s={s} />}</p>
+      <EditableInsight section="alcohol" override={insightOverride} fallback={<AlcoholInsight s={s} />} />
 
       <div className="card summary-card">
         <div className="kpi-kicker">{s.latest_period} 주류 단독 실질 소비지출 (담배 제외)</div>

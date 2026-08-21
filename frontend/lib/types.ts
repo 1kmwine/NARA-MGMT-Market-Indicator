@@ -1,5 +1,8 @@
 export type Source = "live" | "fallback";
 
+export type InsightSection = "csi" | "income" | "alcohol";
+export type Insights = Record<InsightSection, string>;
+
 export interface CsiPoint {
   label: string;
   value: number;
