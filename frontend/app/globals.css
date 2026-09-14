@@ -79,6 +79,15 @@
   margin-bottom: var(--space-4);
 }
 
+/* 차트 전용 소프트 카드 — NID 차트 스펙(소프트 카드형 V2): 네이비 4% 틴트 배경 +
+   헤어라인 보더. 섹션 카드(.card) 안에서 차트 영역만 한 단 더 감싼다. */
+.chart-card {
+  background: color-mix(in srgb, var(--color-chart-emphasis) 4%, var(--color-surface));
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+}
+
 .section-insight {
   font-size: 14px;
   font-weight: 700;

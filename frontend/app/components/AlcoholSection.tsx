@@ -37,6 +37,7 @@ export default function AlcoholSection({ data, insightOverride }: { data: Alcoho
   const max = Math.max(...knownVals);
   const pad = Math.max((max - min) * 0.15, 1);
   const scaleMin = min - pad, scaleMax = max + pad;
+  const lastKnownIdx = points.reduce((last, p, i) => (p.known !== false ? i : last), -1);
 
   return (
     <section id="alcohol" className="card section">
@@ -58,7 +59,7 @@ export default function AlcoholSection({ data, insightOverride }: { data: Alcoho
         <div className="section-title" style={{ margin: "0 0 var(--space-2)" }}>
           분기별 실질 소비지출 금액 추이
         </div>
-        <div ref={ref}>
+        <div ref={ref} className="chart-card">
           <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ display: "block", fontFamily: "var(--font-sans)" }}>
             <text x={right + 10} y={16} textAnchor="end" fontSize={11} fill="var(--color-text-faint)">
               [단위: 원]
@@ -76,12 +77,19 @@ export default function AlcoholSection({ data, insightOverride }: { data: Alcoho
                     width={barW}
                     height={h}
                     rx={4}
-                    fill="var(--chart-7)"
+                    fill={i === lastKnownIdx ? "var(--chart-1)" : "var(--chart-7)"}
                     opacity={known ? 1 : 0.35}
                   />
                   {known && (
                     <>
-                      <text x={xAt(i)} y={baselineY - h - 24} textAnchor="middle" fontSize={12} fontWeight={700} fill="var(--color-text)">
+                      <text
+                        x={xAt(i)}
+                        y={baselineY - h - 24}
+                        textAnchor="middle"
+                        fontSize={i === lastKnownIdx ? 13.5 : 12}
+                        fontWeight={700}
+                        fill={i === lastKnownIdx ? "var(--chart-1)" : "var(--color-text)"}
+                      >
                         {p.value_krw.toLocaleString("ko-KR")}
                       </text>
                       <text

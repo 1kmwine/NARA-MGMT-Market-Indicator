@@ -59,7 +59,7 @@ export default function IncomeSection({ data, insightOverride }: { data: IncomeR
         </button>
       </div>
 
-      <div ref={ref} style={{ marginTop: "var(--space-4)" }}>
+      <div ref={ref} className="chart-card" style={{ marginTop: "var(--space-4)" }}>
         {view === "yoy" ? (
           <IncomeYoyChart pts={pts} width={width} height={height} top={top} bottom={bottom} xAt={xAt} />
         ) : (
@@ -97,14 +97,25 @@ function IncomeYoyChart({
 
   return (
     <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ display: "block", fontFamily: "var(--font-sans)" }}>
+      <defs>
+        <linearGradient id="incomeAreaFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="var(--chart-1)" stopOpacity={0.22} />
+          <stop offset="100%" stopColor="var(--chart-1)" stopOpacity={0} />
+        </linearGradient>
+      </defs>
       <text x={width - 20} y={12} textAnchor="end" fontSize={11} fill="var(--color-text-faint)">
         [단위: %]
       </text>
       <line x1={0} y1={zeroY} x2={width} y2={zeroY} stroke="var(--color-text-faintest)" strokeWidth={1.5} strokeDasharray="3,4" />
+      <path
+        d={`${buildPath(linePts)} L ${linePts[linePts.length - 1].x} ${bottom} L ${linePts[0].x} ${bottom} Z`}
+        fill="url(#incomeAreaFill)"
+        stroke="none"
+      />
       <path d={buildPath(linePts)} fill="none" stroke="var(--chart-1)" strokeWidth={2} />
       {pts.map((p, i) => (
         <g key={p.label}>
-          <circle cx={xAt(i)} cy={linePts[i].y} r={4} fill="var(--color-surface)" stroke={changeColor(p.yoy_pct)} strokeWidth={2} />
+          <circle cx={xAt(i)} cy={linePts[i].y} r={4} fill={changeColor(p.yoy_pct)} />
           <text
             x={xAt(i)}
             y={linePts[i].y + (p.yoy_pct >= 0 ? -10 : 18)}
@@ -163,8 +174,22 @@ function IncomeAmountChart({
         const barH = bottom - barTop;
         return (
           <g key={p.label}>
-            <rect x={xAt(i) - barW / 2} y={barTop} width={barW} height={barH} rx={4} fill="var(--chart-7)" />
-            <text x={xAt(i)} y={barTop - 12} textAnchor="middle" fontSize={12} fontWeight={700} fill="var(--color-text)">
+            <rect
+              x={xAt(i) - barW / 2}
+              y={barTop}
+              width={barW}
+              height={barH}
+              rx={4}
+              fill={i === pts.length - 1 ? "var(--chart-1)" : "var(--chart-7)"}
+            />
+            <text
+              x={xAt(i)}
+              y={barTop - 12}
+              textAnchor="middle"
+              fontSize={i === pts.length - 1 ? 13.5 : 12}
+              fontWeight={700}
+              fill={i === pts.length - 1 ? "var(--chart-1)" : "var(--color-text)"}
+            >
               {valMillion.toFixed(1)}
             </text>
             <text x={xAt(i)} y={bottom + 26} textAnchor="middle" fontSize={11} fill="var(--color-text-faint)">

@@ -125,7 +125,7 @@ export default function FxSection({
         </button>
       </div>
 
-      <div style={{ position: "relative", marginTop: "var(--space-4)" }}>
+      <div className="chart-card" style={{ position: "relative", marginTop: "var(--space-4)" }}>
         <svg
           width={WIDTH}
           height={HEIGHT}

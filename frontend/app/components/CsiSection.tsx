@@ -81,26 +81,30 @@ export default function CsiSection({ data, insightOverride }: { data: CsiRespons
     <section id="csi" className="card section">
       <h2>소비지출전망CSI</h2>
       <EditableInsight section="csi" override={insightOverride} fallback={<CsiInsight pts={pts} />} />
-      <div ref={ref} style={{ marginTop: "var(--space-4)", position: "relative" }}>
+      <div ref={ref} className="chart-card" style={{ marginTop: "var(--space-4)", position: "relative" }}>
         <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ display: "block", fontFamily: "var(--font-sans)" }}>
+          <defs>
+            <linearGradient id="csiAreaFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="var(--chart-1)" stopOpacity={0.22} />
+              <stop offset="100%" stopColor="var(--chart-1)" stopOpacity={0} />
+            </linearGradient>
+          </defs>
           {[0, 1, 2].map((i) => {
             const y = top + (i * (bottom - top)) / 2;
             return <line key={i} x1={0} y1={y} x2={width} y2={y} stroke="var(--color-divider)" strokeWidth={1} />;
           })}
           <line x1={0} y1={baselineY} x2={width} y2={baselineY} stroke="var(--color-text-faintest)" strokeWidth={1} strokeDasharray="3,4" />
+          <path
+            d={`${buildPath(linePts)} L ${linePts[linePts.length - 1].x} ${bottom} L ${linePts[0].x} ${bottom} Z`}
+            fill="url(#csiAreaFill)"
+            stroke="none"
+          />
           <path d={buildPath(linePts)} fill="none" stroke="var(--chart-1)" strokeWidth={2} />
           {pts.map((p, i) => {
             const isLabeled = labelIdxs.has(i);
             return (
               <g key={p.label}>
-                <circle
-                  cx={xAt(i)}
-                  cy={linePts[i].y}
-                  r={isLabeled ? 4 : 2}
-                  fill="var(--color-surface)"
-                  stroke="var(--chart-1)"
-                  strokeWidth={2}
-                />
+                <circle cx={xAt(i)} cy={linePts[i].y} r={isLabeled ? 4 : 2.5} fill="var(--chart-1)" />
                 {isLabeled && (
                   <>
                     <text x={xAt(i)} y={linePts[i].y - 10} textAnchor="middle" fontSize={11.5} fontWeight={700} fill="var(--color-text)">
