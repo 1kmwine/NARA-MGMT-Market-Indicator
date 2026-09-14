@@ -51,18 +51,11 @@ export default async function Page() {
 
   return (
     <div className="wrap">
-      <div className="masthead">
-        <div>
-          <span className="chip-accent">나라셀라 · 경영진 보고</span>
-          <h1 style={{ marginTop: "var(--space-2)" }}>선행지표 대시보드</h1>
-          <p style={{ maxWidth: 560, color: "var(--color-text-muted)" }}>
-            환율·소비심리·가계소득·주류소비 4개 선행지표를 통해 업황 변화를 조기에 포착합니다.
-          </p>
-        </div>
-        <div className="card" style={{ minWidth: 220 }}>
-          <div className="kpi-kicker">데이터 기준</div>
-          <div style={{ marginTop: "var(--space-1)" }}>{dataAsOf}</div>
-        </div>
+      <div className="masthead-compact">
+        <span className="chip-accent">나라셀라 · 경영진 보고</span>
+        <h1>선행지표 대시보드</h1>
+        <span className="masthead-sub">환율·소비심리·가계소득·주류소비</span>
+        <span className="masthead-meta">데이터 기준 {dataAsOf}</span>
       </div>
 
       <KpiGrid fx={fx} csi={csi} income={income} alcohol={alcohol} />

@@ -6,12 +6,29 @@
   padding: var(--space-6) var(--space-5);
 }
 
-.masthead {
+/* 한 줄짜리 컴팩트 헤더 — 칩·제목·부제·데이터기준을 한 행에 몰아서 상단 여백을 줄인다. */
+.masthead-compact {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: var(--space-4);
+  align-items: baseline;
+  gap: var(--space-3);
   flex-wrap: wrap;
+  margin-bottom: var(--space-4);
+}
+
+.masthead-compact h1 {
+  font-size: 16px;
+  margin: 0;
+}
+
+.masthead-sub {
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+}
+
+.masthead-meta {
+  font-size: 11.5px;
+  color: var(--color-text-faint);
+  margin-left: auto;
 }
 
 .kpi-grid {
@@ -198,26 +215,23 @@
   cursor: default;
 }
 
-/* 상단 탭(환율/CSI/가처분소득/주류) — 기존 nav-row(앵커 링크)를 대체. */
+/* 상단 탭(환율/CSI/가처분소득/주류) — 밑줄 없는 텍스트 탭(다른 블록의 손익 화면과 톤 통일). */
 .tab-row {
   display: flex;
-  gap: var(--space-2);
-  margin: var(--space-5) 0 var(--space-4);
+  gap: var(--space-5);
+  margin: var(--space-4) 0;
   flex-wrap: wrap;
-  border-bottom: 1px solid var(--color-divider);
 }
 
 .tab-btn {
   border: none;
   background: none;
   cursor: pointer;
-  padding: 10px 4px;
-  margin-bottom: -1px;
+  padding: 0;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--color-text-faint);
-  border-bottom: 2px solid transparent;
-  transition: color var(--transition-standard), border-color var(--transition-standard);
+  transition: color var(--transition-standard);
 }
 
 .tab-btn:hover {
@@ -225,8 +239,8 @@
 }
 
 .tab-btn.on {
-  color: var(--accent);
-  border-bottom-color: var(--accent);
+  color: var(--color-text);
+  font-weight: 700;
 }
 
 .footer-note {
