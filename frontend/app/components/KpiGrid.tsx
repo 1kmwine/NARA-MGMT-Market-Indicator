@@ -1,14 +1,17 @@
-import { changeColor, fmtPct, toMillion } from "@/lib/chart";
-import type { AlcoholResponse, CsiResponse, IncomeResponse } from "@/lib/types";
+import { changeColor, fmtPct, toMillion, yoyPct } from "@/lib/chart";
+import type { AlcoholResponse, CsiResponse, FxResponse, IncomeResponse } from "@/lib/types";
 
 interface Props {
+  fx: FxResponse;
   csi: CsiResponse;
   income: IncomeResponse;
   alcohol: AlcoholResponse;
 }
 
-// 3개 섹션과 1:1 대응하는 상단 요약 카드. 기본 비교 기준은 전년동기대비(YoY).
-export default function KpiGrid({ csi, income, alcohol }: Props) {
+// 4개 섹션과 1:1 대응하는 상단 요약 카드. 기본 비교 기준은 전년동기대비(YoY).
+export default function KpiGrid({ fx, csi, income, alcohol }: Props) {
+  const latestFx = fx.points[fx.points.length - 1];
+  const fxYoy = yoyPct(fx.points, fx.points.length - 1, 12, "usd");
   const latestCsi = csi.points[csi.points.length - 1];
   const latestIncome = income.points[income.points.length - 1];
   const latestAlcohol = alcohol.summary;
@@ -17,6 +20,18 @@ export default function KpiGrid({ csi, income, alcohol }: Props) {
   const csiYoy = csiYoyIdx >= 0 ? latestCsi.value - csi.points[csiYoyIdx].value : null;
 
   const cards = [
+    {
+      kicker: "원/달러 환율",
+      value: (
+        <>
+          {latestFx.usd.toLocaleString("ko-KR")}
+          <span className="kpi-unit">원</span>
+        </>
+      ),
+      meta: fxYoy != null ? `${fmtPct(fxYoy)} 전년동월대비` : latestFx.label,
+      metaColor: fxYoy != null ? changeColor(fxYoy) : undefined,
+      sub: null,
+    },
     {
       kicker: "소비지출전망CSI",
       value: <>{latestCsi.value}</>,

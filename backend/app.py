@@ -7,6 +7,7 @@
 실행 후: http://localhost:8000/docs (API 테스트 화면)
 """
 from pathlib import Path
+from typing import Literal
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
@@ -16,7 +17,7 @@ from pydantic import BaseModel
 load_dotenv(Path(__file__).parent / ".env")  # 실행 위치와 무관하게 backend/.env를 정확히 찾도록 절대경로 지정
 
 import insights_service  # noqa: E402
-from services import alcohol_service, csi_service, income_service  # noqa: E402
+from services import alcohol_service, csi_service, fx_service, income_service  # noqa: E402
 
 app = FastAPI(title="선행지표 대시보드 API")
 
@@ -51,6 +52,18 @@ def get_income():
 def get_alcohol():
     """주류 소비지출(가구당 월평균, 실질)."""
     return alcohol_service.get_alcohol()
+
+
+@app.get("/api/fx")
+def get_fx(basis: Literal["avg", "eom"] = "avg"):
+    """원/달러, 원/유로 환율. basis=avg(월평균, 기본값) 또는 eom(월말 기준)."""
+    return fx_service.get_fx_monthly(basis)
+
+
+@app.get("/api/fx/latest")
+def get_fx_latest():
+    """조회 시점(오늘) 기준 가장 최근 영업일의 환율."""
+    return fx_service.get_fx_latest()
 
 
 @app.get("/api/insights")

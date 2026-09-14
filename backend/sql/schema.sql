@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `indicator` (
 CREATE TABLE IF NOT EXISTS `indicator_value` (
   `id`             bigint(20)   NOT NULL AUTO_INCREMENT,
   `indicator_code` varchar(30)  NOT NULL,
-  `period`         varchar(6)   NOT NULL COMMENT 'M=YYYYMM(202604), Q=YYYYQQ(202601=1분기)',
+  `period`         varchar(8)   NOT NULL COMMENT 'M=YYYYMM(202604), Q=YYYYQQ(202601=1분기), D=YYYYMMDD(환율 일별)',
   `label`          varchar(20)  NOT NULL COMMENT "화면 표기 라벨 ('26.04, '26 Q1)",
   `value`          decimal(18,4) NOT NULL COMMENT '원지표값 (CSI 지수 / 가구당 월평균 원)',
   `yoy_pct`        decimal(8,2) DEFAULT NULL COMMENT '전년동기대비 증감률(%). 분기 지표만 사용',
@@ -41,6 +41,11 @@ CREATE TABLE IF NOT EXISTS `indicator_value` (
   CONSTRAINT `fk_indicator_value_indicator` FOREIGN KEY (`indicator_code`)
     REFERENCES `indicator` (`code`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='선행지표 시계열 실측치';
+
+-- 환율 편입(2026-09-14)으로 일별 지표(D=YYYYMMDD, 8자리)가 추가돼 기존 varchar(6)로는 부족해짐.
+-- 이미 만들어진 테이블에도 반영되도록 MODIFY(재실행해도 안전)로 한 번 더 명시.
+ALTER TABLE `indicator_value` MODIFY `period` varchar(8) NOT NULL
+  COMMENT 'M=YYYYMM(202604), Q=YYYYQQ(202601=1분기), D=YYYYMMDD(환율 일별)';
 
 -- 수집 이력: 언제 어떤 지표를 몇 건 적재했고 실패했다면 왜 실패했는지
 CREATE TABLE IF NOT EXISTS `fetch_log` (

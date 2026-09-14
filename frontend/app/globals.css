@@ -57,13 +57,6 @@
   margin-top: 2px;
 }
 
-.nav-row {
-  display: flex;
-  gap: var(--space-2);
-  margin: var(--space-5) 0 var(--space-4);
-  flex-wrap: wrap;
-}
-
 .section {
   padding: var(--space-5);
   margin-bottom: var(--space-4);
@@ -120,6 +113,120 @@
   background: var(--color-surface-tint);
   max-width: 320px;
   margin-top: var(--space-4);
+}
+
+/* 조회 시점 환율 — 달러/유로를 각각 상자로 나눠 보여준다.
+   상단 조회 날짜 → 통화·값 → 전일대비 증감 순. (환율 블록에서 이관) */
+.fx-latest-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.fx-latest-box {
+  background: var(--color-surface);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+}
+
+.fx-latest-date {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.fx-latest-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--space-2);
+}
+
+.fx-latest-value {
+  font-weight: 700;
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+  margin-top: 2px;
+}
+
+.fx-latest-change {
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  margin-top: var(--space-2);
+}
+
+/* 좌우 세그먼트 컨트롤(환율의 월평균/월말 전환). 환율 블록에서 이관. */
+.seg-group {
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  background: #f3f2ed;
+  border-radius: 8px;
+  padding: 3px;
+  margin-top: var(--space-3);
+}
+
+.seg-btn {
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.seg-btn.on {
+  font-weight: 600;
+  color: var(--color-text);
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.seg-btn:disabled {
+  cursor: default;
+}
+
+/* 상단 탭(환율/CSI/가처분소득/주류) — 기존 nav-row(앵커 링크)를 대체. */
+.tab-row {
+  display: flex;
+  gap: var(--space-2);
+  margin: var(--space-5) 0 var(--space-4);
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.tab-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 10px 4px;
+  margin-bottom: -1px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-faint);
+  border-bottom: 2px solid transparent;
+  transition: color var(--transition-standard), border-color var(--transition-standard);
+}
+
+.tab-btn:hover {
+  color: var(--color-text);
+}
+
+.tab-btn.on {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
 }
 
 .footer-note {

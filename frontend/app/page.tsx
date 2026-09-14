@@ -1,6 +1,8 @@
-import { getAlcohol, getCsi, getIncome, getInsights } from "@/lib/api";
+import { getAlcohol, getCsi, getFx, getFxLatest, getIncome, getInsights } from "@/lib/api";
 import AlcoholSection from "./components/AlcoholSection";
 import CsiSection from "./components/CsiSection";
+import DashboardTabs from "./components/DashboardTabs";
+import FxSection from "./components/FxSection";
 import IncomeSection from "./components/IncomeSection";
 import KpiGrid from "./components/KpiGrid";
 
@@ -18,9 +20,15 @@ function formatDataAsOf(collectedAt: string | null): string {
 }
 
 export default async function Page() {
-  let csi, income, alcohol;
+  let fx, fxLatest, csi, income, alcohol;
   try {
-    [csi, income, alcohol] = await Promise.all([getCsi(), getIncome(), getAlcohol()]);
+    [fx, fxLatest, csi, income, alcohol] = await Promise.all([
+      getFx(),
+      getFxLatest(),
+      getCsi(),
+      getIncome(),
+      getAlcohol(),
+    ]);
   } catch (err) {
     return (
       <div className="wrap">
@@ -37,9 +45,9 @@ export default async function Page() {
   }
 
   // 인사이트 편집 문구는 부가 기능이라, 조회에 실패해도 대시보드 자체는 그대로 뜨게 한다.
-  const insights = await getInsights().catch(() => ({ csi: "", income: "", alcohol: "" }));
+  const insights = await getInsights().catch(() => ({ fx: "", csi: "", income: "", alcohol: "" }));
 
-  const dataAsOf = formatDataAsOf(csi.collected_at);
+  const dataAsOf = formatDataAsOf(fx.collected_at ?? csi.collected_at);
 
   return (
     <div className="wrap">
@@ -48,7 +56,7 @@ export default async function Page() {
           <span className="chip-accent">나라셀라 · 경영진 보고</span>
           <h1 style={{ marginTop: "var(--space-2)" }}>선행지표 대시보드</h1>
           <p style={{ maxWidth: 560, color: "var(--color-text-muted)" }}>
-            소비심리·가계소득·주류소비 3개 선행지표를 통해 업황 변화를 조기에 포착합니다.
+            환율·소비심리·가계소득·주류소비 4개 선행지표를 통해 업황 변화를 조기에 포착합니다.
           </p>
         </div>
         <div className="card" style={{ minWidth: 220 }}>
@@ -57,17 +65,14 @@ export default async function Page() {
         </div>
       </div>
 
-      <div className="nav-row">
-        <a href="#csi" className="btn-outline">소비지출전망CSI</a>
-        <a href="#income" className="btn-outline">가처분소득</a>
-        <a href="#alcohol" className="btn-outline">주류 소비지출</a>
-      </div>
+      <KpiGrid fx={fx} csi={csi} income={income} alcohol={alcohol} />
 
-      <KpiGrid csi={csi} income={income} alcohol={alcohol} />
-
-      <CsiSection data={csi} insightOverride={insights.csi} />
-      <IncomeSection data={income} insightOverride={insights.income} />
-      <AlcoholSection data={alcohol} insightOverride={insights.alcohol} />
+      <DashboardTabs
+        fx={<FxSection key="fx" initialData={fx} latest={fxLatest} insightOverride={insights.fx} />}
+        csi={<CsiSection key="csi" data={csi} insightOverride={insights.csi} />}
+        income={<IncomeSection key="income" data={income} insightOverride={insights.income} />}
+        alcohol={<AlcoholSection key="alcohol" data={alcohol} insightOverride={insights.alcohol} />}
+      />
 
       <div className="footer-note">
         <strong style={{ color: "var(--color-text)" }}>데이터 갱신 안내</strong> — 지표는 <strong>매일 오전 8시</strong>에 ECOS/KOSIS에서

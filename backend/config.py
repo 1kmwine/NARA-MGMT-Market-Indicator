@@ -11,6 +11,17 @@ ECOS_CSI_STAT_CODE = "511Y002"
 ECOS_CSI_ITEM_CODE = "FMCB"  # 소비지출전망CSI
 ECOS_CSI_TOTAL_ITEM_CODE2 = "99988"  # 전체(성별/연령 구분 없이)
 
+# 3.1.2.1. 주요국 통화의 대원화환율 (월, 평균자료) — nara-mgmt-exchange-rate에서 이관(2026-09-14)
+ECOS_FX_STAT_CODE = "731Y004"
+ECOS_FX_USD_ITEM_CODE = "0000001"  # 원/미국달러(매매기준율)
+ECOS_FX_EUR_ITEM_CODE = "0000003"  # 원/유로
+ECOS_FX_AVG_ITEM_CODE2 = "0000100"  # 평균자료(월평균)
+ECOS_FX_EOM_ITEM_CODE2 = "0000200"  # 말일자료(월말 기준)
+
+# 3.1.1.1. 주요국 통화의 대원화환율 (일별) — "조회 시점(오늘) 환율" 표시용.
+# 731Y004(월간)와 달리 항목코드가 통화 하나뿐이고 평균/말일 구분이 없다.
+ECOS_FX_DAILY_STAT_CODE = "731Y001"
+
 # --- KOSIS (국가통계포털) ---
 KOSIS_BASE_URL = "https://kosis.kr/openapi/Param/statisticsParameterData.do"
 

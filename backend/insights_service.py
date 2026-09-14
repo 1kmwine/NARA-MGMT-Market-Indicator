@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 
 _FILE = Path(__file__).parent / "data" / "insight_overrides.json"
-SECTIONS = {"csi", "income", "alcohol"}
+SECTIONS = {"csi", "income", "alcohol", "fx"}
 
 
 def _read() -> dict:

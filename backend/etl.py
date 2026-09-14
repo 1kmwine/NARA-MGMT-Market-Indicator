@@ -1,7 +1,7 @@
 """선행지표 숫자를 ECOS/KOSIS에서 받아 MariaDB(leading_indicator 스키마)에 적재한다.
 
   python etl.py --init   스키마/테이블 생성 (sql/schema.sql 적용, 이미 있으면 그대로 둠)
-  python etl.py          3개 지표 수집 후 upsert (같은 period는 덮어씀)
+  python etl.py          지표 전부 수집 후 upsert (같은 period는 덮어씀)
   python etl.py --show   적재 결과 확인
 
 API 호출이 실패하면 fallback_data.py의 스냅샷 값을 origin='fallback'으로 적재해
@@ -9,7 +9,7 @@ API 호출이 실패하면 fallback_data.py의 스냅샷 값을 origin='fallback
 """
 import argparse
 import sys
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -60,6 +60,46 @@ INDICATOR_MASTER = [
         "unit": "원",
         "period_type": "Q",
         "note": fallback_data.ALCOHOL_SUMMARY["source_note"],
+    },
+    {
+        "code": "fx_usd",
+        "name": "원/달러 환율(월평균)",
+        "source_org": "ECOS",
+        "source_table": config.ECOS_FX_STAT_CODE,
+        "source_param": f"item={config.ECOS_FX_USD_ITEM_CODE}/{config.ECOS_FX_AVG_ITEM_CODE2}",
+        "unit": "원",
+        "period_type": "M",
+        "note": fallback_data.FX_SOURCE_NOTE,
+    },
+    {
+        "code": "fx_eur",
+        "name": "원/유로 환율(월평균)",
+        "source_org": "ECOS",
+        "source_table": config.ECOS_FX_STAT_CODE,
+        "source_param": f"item={config.ECOS_FX_EUR_ITEM_CODE}/{config.ECOS_FX_AVG_ITEM_CODE2}",
+        "unit": "원",
+        "period_type": "M",
+        "note": fallback_data.FX_SOURCE_NOTE,
+    },
+    {
+        "code": "fx_usd_daily",
+        "name": "원/달러 환율(일별 매매기준율)",
+        "source_org": "ECOS",
+        "source_table": config.ECOS_FX_DAILY_STAT_CODE,
+        "source_param": f"item={config.ECOS_FX_USD_ITEM_CODE}",
+        "unit": "원",
+        "period_type": "D",
+        "note": "조회 시점 기준 가장 최근 영업일 환율 표시용 (최근 10영업일 보관).",
+    },
+    {
+        "code": "fx_eur_daily",
+        "name": "원/유로 환율(일별 매매기준율)",
+        "source_org": "ECOS",
+        "source_table": config.ECOS_FX_DAILY_STAT_CODE,
+        "source_param": f"item={config.ECOS_FX_EUR_ITEM_CODE}",
+        "unit": "원",
+        "period_type": "D",
+        "note": "조회 시점 기준 가장 최근 영업일 환율 표시용 (최근 10영업일 보관).",
     },
 ]
 
@@ -160,10 +200,80 @@ def _fetch_quarterly(obj_l1: str, snapshot: list[dict]) -> tuple[list[dict], str
     return points, "live"
 
 
+_FX_START_MONTH = "202401"
+
+
+def fetch_fx_monthly(item_code: str, snapshot_key: str) -> tuple[list[dict], str]:
+    """원/달러 또는 원/유로 월평균 환율. (월말 기준 토글은 화면에서 그때그때 라이브 조회 —
+    사용 빈도가 낮은 보조 뷰라 DB 적재 대상에서 제외)"""
+    try:
+        rows = ecos_client.fetch_statistic(
+            stat_code=config.ECOS_FX_STAT_CODE,
+            freq="M",
+            start=_FX_START_MONTH,
+            end=date.today().strftime("%Y%m"),
+            item_codes=[item_code, config.ECOS_FX_AVG_ITEM_CODE2],
+        )
+    except StatisticsAPIError:
+        return [
+            {
+                "period": _label_to_period(p["label"]),
+                "label": p["label"],
+                "value": p[snapshot_key],
+                "yoy_pct": None,
+            }
+            for p in fallback_data.FX_MONTHLY
+            if p[snapshot_key] is not None
+        ], "fallback"
+
+    return [
+        {
+            "period": r["TIME"],
+            "label": _month_label(r["TIME"]),
+            "value": float(r["DATA_VALUE"]),
+            "yoy_pct": None,
+        }
+        for r in rows
+        if r.get("DATA_VALUE")
+    ], "live"
+
+
+def fetch_fx_daily(item_code: str) -> tuple[list[dict], str]:
+    """최근 10영업일 원/달러 또는 원/유로 매매기준율(일별). "조회 시점 환율" 카드가
+    가장 최근 값과 그 직전 값(전일대비)을 비교해야 해서 하루치가 아니라 며칠치를 그대로 적재한다."""
+    try:
+        end = date.today()
+        start = end - timedelta(days=10)
+        rows = ecos_client.fetch_statistic(
+            stat_code=config.ECOS_FX_DAILY_STAT_CODE,
+            freq="D",
+            start=start.strftime("%Y%m%d"),
+            end=end.strftime("%Y%m%d"),
+            item_codes=[item_code],
+        )
+    except StatisticsAPIError:
+        return [], "fallback"  # 일별 스냅샷은 안 만듦 — service 계층이 FX_LATEST로 대체한다
+
+    return [
+        {
+            "period": r["TIME"],
+            "label": f"{r['TIME'][:4]}.{r['TIME'][4:6]}.{r['TIME'][6:8]}",
+            "value": float(r["DATA_VALUE"]),
+            "yoy_pct": None,
+        }
+        for r in rows
+        if r.get("DATA_VALUE")
+    ], "live"
+
+
 FETCHERS = {
     "csi": fetch_csi,
     "income": lambda: _fetch_quarterly(config.KOSIS_INCOME_OBJ_L1, fallback_data.INCOME_YOY),
     "alcohol": lambda: _fetch_quarterly(config.KOSIS_ALCOHOL_OBJ_L1, fallback_data.ALCOHOL_YOY),
+    "fx_usd": lambda: fetch_fx_monthly(config.ECOS_FX_USD_ITEM_CODE, "usd"),
+    "fx_eur": lambda: fetch_fx_monthly(config.ECOS_FX_EUR_ITEM_CODE, "eur"),
+    "fx_usd_daily": lambda: fetch_fx_daily(config.ECOS_FX_USD_ITEM_CODE),
+    "fx_eur_daily": lambda: fetch_fx_daily(config.ECOS_FX_EUR_ITEM_CODE),
 }
 
 
@@ -228,7 +338,7 @@ def log_fetch(conn, code: str, status: str, origin: str, row_count: int,
 
 
 def run() -> int:
-    """3개 지표를 수집해 적재하고, 실패한 지표 수를 반환한다."""
+    """지표를 전부 수집해 적재하고, 실패한 지표 수를 반환한다."""
     failures = 0
     with db.connect() as conn:
         upsert_master(conn)

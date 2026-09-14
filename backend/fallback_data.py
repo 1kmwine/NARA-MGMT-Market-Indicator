@@ -55,3 +55,39 @@ ALCOHOL_SUMMARY = {
         "무알코올 주류도 주류 지출에 포함. '소버 큐리어스' 트렌드 및 회식 문화 변화가 배경으로 분석됨."
     ),
 }
+
+# 환율(원/달러, 원/유로) — nara-mgmt-exchange-rate에서 이관(2026-09-14).
+# 월평균 환율. eur가 None인 구간은 유로 데이터 미확인 구간. est=True는 인접월 보간 추정치.
+FX_MONTHLY = [
+    {"label": "'24.01", "usd": 1324.88, "eur": None, "est": False},
+    {"label": "'24.02", "usd": 1332.02, "eur": None, "est": False},
+    {"label": "'24.03", "usd": 1331.20, "eur": None, "est": False},
+    {"label": "'24.04", "usd": 1368.34, "eur": None, "est": False},
+    {"label": "'24.05", "usd": 1363.73, "eur": None, "est": False},
+    {"label": "'24.06", "usd": 1379.84, "eur": None, "est": False},
+    {"label": "'24.07", "usd": 1381.84, "eur": None, "est": False},
+    {"label": "'24.08", "usd": 1349.87, "eur": None, "est": False},
+    {"label": "'24.09", "usd": 1329.60, "eur": None, "est": False},
+    {"label": "'24.10", "usd": 1360.73, "eur": None, "est": False},
+    {"label": "'24.11", "usd": 1391.66, "eur": None, "est": True},
+    {"label": "'24.12", "usd": 1422.63, "eur": None, "est": True},
+    {"label": "'25.01", "usd": 1453.39, "eur": 1505.16, "est": False},
+    {"label": "'25.02", "usd": 1445.09, "eur": 1505.88, "est": False},
+    {"label": "'25.03", "usd": 1457.35, "eur": 1577.24, "est": False},
+    {"label": "'25.04", "usd": 1439.54, "eur": 1615.44, "est": False},
+    {"label": "'25.05", "usd": 1391.19, "eur": 1568.74, "est": False},
+    {"label": "'25.06", "usd": 1364.66, "eur": 1573.82, "est": False},
+    {"label": "'25.07", "usd": 1378.36, "eur": 1609.19, "est": False},
+    {"label": "'25.08", "usd": 1389.05, "eur": 1618.23, "est": False},
+    {"label": "'25.09", "usd": 1393.08, "eur": 1635.03, "est": False},
+    {"label": "'25.10", "usd": 1423.23, "eur": 1656.69, "est": False},
+]
+
+FX_SOURCE_NOTE = (
+    "서울외국환중개 매매기준율(월평균 환산). "
+    "원/유로는 EUR/USD 동기간 시장평균 반영 환산치. "
+    "'24.11~'24.12 원/달러는 인접월 보간 추정치."
+)
+
+# "조회 시점 환율" API/DB 조회 실패 시 쓰는 스냅샷 — FX_MONTHLY 마지막 달 값을 그대로 사용.
+FX_LATEST = {"date": "2025.10.31", "usd": FX_MONTHLY[-1]["usd"], "eur": FX_MONTHLY[-1]["eur"]}

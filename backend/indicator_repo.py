@@ -65,6 +65,48 @@ def get_csi(base_note: str) -> dict | None:
     }
 
 
+def get_fx(base_note: str) -> dict | None:
+    """원/달러·원/유로 월평균 환율. 적재된 행이 없으면 None.
+
+    월말 기준(eom) 토글은 DB에 적재하지 않는다 — 호출한 서비스가 basis!="avg"면
+    이 함수를 부르지 않고 곧장 라이브 조회로 넘어간다.
+    """
+    usd_rows = _fetch("fx_usd", require_yoy=False)
+    if not usd_rows:
+        return None
+    eur_by_period = {r["period"]: r for r in _fetch("fx_eur", require_yoy=False)}
+
+    points = [
+        {
+            "label": r["label"],
+            "usd": _to_float(r["value"]),
+            "eur": _to_float(eur_by_period[r["period"]]["value"]) if r["period"] in eur_by_period else None,
+            "est": False,
+        }
+        for r in usd_rows
+    ]
+    return {"points": points, "basis": "avg", **_meta(usd_rows, base_note)}
+
+
+def get_fx_daily(base_note: str) -> dict | None:
+    """조회 시점 기준 가장 최근 영업일 환율(+ 전일대비 비교용 직전 값). 적재된 행이 없으면 None."""
+    usd_rows = _fetch("fx_usd_daily", require_yoy=False)
+    if not usd_rows:
+        return None
+    eur_rows = _fetch("fx_eur_daily", require_yoy=False)
+
+    last_usd = usd_rows[-1]
+    last_eur = eur_rows[-1] if eur_rows else None
+    return {
+        "date": f"{last_usd['period'][:4]}.{last_usd['period'][4:6]}.{last_usd['period'][6:8]}",
+        "usd": _to_float(last_usd["value"]),
+        "eur": _to_float(last_eur["value"]) if last_eur else None,
+        "usd_prev": _to_float(usd_rows[-2]["value"]) if len(usd_rows) >= 2 else None,
+        "eur_prev": _to_float(eur_rows[-2]["value"]) if len(eur_rows) >= 2 else None,
+        **_meta(usd_rows, base_note),
+    }
+
+
 def get_quarterly(code: str, base_note: str, *, with_known: bool = False) -> dict | None:
     """분기 지표(income/alcohol)의 YoY 시계열. 적재된 행이 없으면 None.
 

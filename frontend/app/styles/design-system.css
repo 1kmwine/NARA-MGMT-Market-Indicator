@@ -50,7 +50,7 @@
   --color-surface-hover: #FAFAFA;   /* 테이블 행 hover */
   --color-bg: #FAFAFA;              /* 페이지 전체 배경 */
 
-  --color-danger: #E5484D;          /* "업데이트됨" 점, 경고 점 */
+  --color-danger: #DC2626;          /* "업데이트됨" 점, 경고 점, 하락 표시 — 환율 블록의 유로(빨강) 계열색과 통일 */
   --color-danger-text: #B6544A;     /* 로그아웃 등 위험 텍스트 */
   --color-up: #1A7F37;              /* 신장율 상승 등 — accent와 무관한 별도 semantic 색 */
 
@@ -100,8 +100,10 @@
 
   /* ── 차트 색상 팔레트 — NARA-Design-System colors.css 원본 그대로 이식.
      --accent(진한 브랜드 블루)와 별개로, 차트 계열색은 이 톤다운된 팔레트를 쓴다
-     (지금까지 누락돼 있어서 차트가 --accent 원색을 그대로 썼음). */
-  --chart-1: #89a9c3;
+     (지금까지 누락돼 있어서 차트가 --accent 원색을 그대로 썼음).
+     --chart-1은 2026-09-14에 환율 블록 편입에 맞춰 그 블록의 달러(파랑) 계열색으로 교체 —
+     CSI/가처분소득/주류 차트가 전부 이 토큰 하나를 쓰므로 자동으로 환율 차트와 색이 통일된다. */
+  --chart-1: #2563EB;
   --chart-2: #ddc78f;
   --chart-3: #b3b3b3;
   --chart-4: #d6d6d6;
