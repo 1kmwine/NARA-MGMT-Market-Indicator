@@ -76,7 +76,7 @@ export default function AlcoholSection({ data, insightOverride }: { data: Alcoho
                     width={barW}
                     height={h}
                     rx={4}
-                    fill="var(--chart-1)"
+                    fill="var(--chart-7)"
                     opacity={known ? 1 : 0.35}
                   />
                   {known && (

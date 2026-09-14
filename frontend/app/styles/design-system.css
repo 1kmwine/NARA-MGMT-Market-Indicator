@@ -50,7 +50,8 @@
   --color-surface-hover: #FAFAFA;   /* 테이블 행 hover */
   --color-bg: #FAFAFA;              /* 페이지 전체 배경 */
 
-  --color-danger: #DC2626;          /* 환율 차트 유로(빨강) 계열색과 통일 — canonical 기본값(#E5484D) 예외 */
+  --color-danger: #B0584F;          /* NARA-Design-System의 negative 토큰(github.com/1kmwine/NARA-Design-System) 값 —
+                                        canonical design-system.css 기본값(#E5484D)보다 이쪽을 우선 적용 */
   --color-danger-text: #B6544A;     /* 로그아웃 등 위험 텍스트 */
   --color-up: #1A7F37;              /* 신장율 상승 등 — accent와 무관한 별도 semantic 색 */
   --color-yellow-soft: #FDF3D0;     /* .ds-grid 컬럼 하이라이트 배경(선택된 컬럼 강조) */
@@ -104,10 +105,12 @@
   --text-caption: 500 12px/1.4 var(--font-sans);
   --text-mono: 400 14px/1.6 var(--font-mono);
 
-  /* 차트 색상 팔레트. --chart-1은 2026-09-14 환율 블록 통합 때 그 블록의
-     달러(블루) 계열색으로 교체 — CSI/가처분소득/주류 차트가 전부 이 토큰 하나를
-     쓰므로 자동으로 환율 차트와 색이 통일된다. */
-  --chart-1: #2563EB;
+  /* 차트 색상 팔레트. --chart-1은 NARA-Design-System 차트(Weekly Revenue Trend,
+     Quarterly Bridge 등)의 강조 네이비로 교체(2026-09-15) — 위 --color-chart-emphasis와
+     같은 값. 단일 계열 선/막대 차트(CSI, 가처분소득 YoY)가 이 토큰을 쓴다. 막대 차트
+     중 "값 자체"를 보여주는 차트(가처분소득 절대금액, 주류)는 회색(--chart-7)을 쓴다 —
+     NARA-Design-System의 BarChart(Revenue by Channel)가 회색 막대인 것과 동일한 관례. */
+  --chart-1: var(--color-chart-emphasis);
   --chart-2: #ddc78f;
   --chart-3: #b3b3b3;
   --chart-4: #d6d6d6;

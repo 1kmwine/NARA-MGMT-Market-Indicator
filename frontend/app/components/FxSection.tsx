@@ -7,10 +7,11 @@ import Change from "./Change";
 import EditableInsight from "./EditableInsight";
 import SourceLine from "./SourceLine";
 
-// 두 계열 모두 실선이라 색만으로 구분된다. 달러=블루, 유로=레드로 고정하고
-// 표식은 흰 속에 계열색 테두리를 둘러 선과 겹쳐도 개수가 보이게 한다.
-const USD_COLOR = "#2563EB";
-const EUR_COLOR = "#DC2626";
+// 두 계열 모두 실선이라 색만으로 구분된다. NARA-Design-System 팔레트의 블루 계열
+// 두 톤(달러=accent 블루, 유로=차트 강조 네이비)으로 구분하고, 표식은 흰 속에
+// 계열색 테두리를 둘러 선과 겹쳐도 개수가 보이게 한다.
+const USD_COLOR = "var(--accent)";
+const EUR_COLOR = "var(--color-chart-emphasis)";
 const MARKER_FILL = "#FFFFFF";
 
 const WIDTH = 720, HEIGHT = 240;

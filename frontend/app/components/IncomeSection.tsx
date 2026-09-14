@@ -163,7 +163,7 @@ function IncomeAmountChart({
         const barH = bottom - barTop;
         return (
           <g key={p.label}>
-            <rect x={xAt(i) - barW / 2} y={barTop} width={barW} height={barH} rx={4} fill="var(--chart-1)" />
+            <rect x={xAt(i) - barW / 2} y={barTop} width={barW} height={barH} rx={4} fill="var(--chart-7)" />
             <text x={xAt(i)} y={barTop - 12} textAnchor="middle" fontSize={12} fontWeight={700} fill="var(--color-text)">
               {valMillion.toFixed(1)}
             </text>
