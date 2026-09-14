@@ -4,7 +4,6 @@ import CsiSection from "./components/CsiSection";
 import DashboardTabs from "./components/DashboardTabs";
 import FxSection from "./components/FxSection";
 import IncomeSection from "./components/IncomeSection";
-import KpiGrid from "./components/KpiGrid";
 
 export const dynamic = "force-dynamic"; // 캐시 없이, 매번 백엔드(→DB)에서 가장 최근 적재분을 읽는다.
 
@@ -57,8 +56,6 @@ export default async function Page() {
         <span className="masthead-sub">환율·소비심리·가계소득·주류소비</span>
         <span className="masthead-meta">데이터 기준 {dataAsOf}</span>
       </div>
-
-      <KpiGrid fx={fx} csi={csi} income={income} alcohol={alcohol} />
 
       <DashboardTabs
         fx={<FxSection key="fx" initialData={fx} latest={fxLatest} insightOverride={insights.fx} />}

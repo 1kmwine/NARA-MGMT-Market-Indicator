@@ -79,7 +79,7 @@ export default function CsiSection({ data, insightOverride }: { data: CsiRespons
 
   return (
     <section id="csi" className="card section">
-      <h2>2. 소비지출전망CSI</h2>
+      <h2>소비지출전망CSI</h2>
       <EditableInsight section="csi" override={insightOverride} fallback={<CsiInsight pts={pts} />} />
       <div ref={ref} style={{ marginTop: "var(--space-4)", position: "relative" }}>
         <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ display: "block", fontFamily: "var(--font-sans)" }}>

@@ -40,7 +40,7 @@ export default function AlcoholSection({ data, insightOverride }: { data: Alcoho
 
   return (
     <section id="alcohol" className="card section">
-      <h2>4. 주류 소비지출 (가구당 월평균, 실질)</h2>
+      <h2>주류 소비지출 (가구당 월평균, 실질)</h2>
       <EditableInsight section="alcohol" override={insightOverride} fallback={<AlcoholInsight s={s} />} />
 
       <div className="card summary-card">

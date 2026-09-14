@@ -39,7 +39,7 @@ export default function IncomeSection({ data, insightOverride }: { data: IncomeR
 
   return (
     <section id="income" className="card section">
-      <h2>3. 가구당 월평균 처분가능소득 (실질, 전년동기대비 증감률)</h2>
+      <h2>가구당 월평균 처분가능소득 (실질, 전년동기대비 증감률)</h2>
       <EditableInsight section="income" override={insightOverride} fallback={<IncomeInsight latest={latest} />} />
 
       <div style={{ display: "flex", gap: "var(--space-2)", marginTop: "var(--space-3)" }}>

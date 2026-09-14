@@ -1,34 +1,34 @@
-/* Next.js(Turbopack) CSS 파서는 @import가 다른 규칙보다 앞에 와야 해서, 원본 파일 하단에
-   있던 구글 폰트 @import를 맨 위로 옮겼다(이 저장소의 사본에만 적용한 수정). */
-@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
-
-/*
- * Naracellar Information Digest — 공통 디자인 시스템 (design-system.css)
+/* design-system.css — 이 프로젝트(선행지표) 전용 사본.
  *
- * 2026-07-27: NARA-Design-System(github.com/1kmwine/NARA-Design-System, warm-minimalism
- * / Notion 스타일 workspace 디자인 언어)의 토큰·비주얼 패턴을 이식했다. 색상 스케일을
- * 중성 그레이(무채색)로, 반경/그림자를 그 시스템의 스케일로, 헤딩 폰트를 Lora serif로
- * 바꿨다. 컴포넌트 클래스명(.card/.tile/.badge/.btn 등)과 CSS 변수 이름은 그대로 유지해
- * 기존 33개 블록 문서(design.md)·연동 코드가 깨지지 않게 했다.
+ * 2026-09-14: NARA-AI-Playground의 canonical design-system.css로 갱신
+ * (github.com/1kmwine/NARA-AI-Playground/tree/main/design-system, v2026-08-18 기준).
+ * 이전 사본은 2026-07-27 시점 버전이라 헤딩 폰트가 Lora serif로 남아있었는데,
+ * canonical이 2026-08-12에 IBM Plex Sans KR(산세리프)로 바꾼 걸 이번에 반영했다.
+ * ds-table/ds-grid 등 표 규칙도 canonical 최신본 그대로 가져왔다(이 프로젝트는
+ * 표를 안 쓰지만, 이후 다른 화면에서 그대로 붙여 쓸 수 있게 사본을 온전히 유지).
  *
- * --accent 기본값도 2026-07-27 후속 변경으로 NARA-Design-System 기본 accent(블루
- * #2383E2)로 교체했다(이전엔 나라셀라 그린 #7BA23E를 브랜드색이라 유지했었으나,
- * "디자인 시스템 색으로" 요청에 따라 블루를 기본값으로 바꿈). accent에서
- * 파생시키는 color-mix() 패턴(이 프로젝트 고유, NARA-Design-System에는 없음)은
- * 그대로 유지 — --accent 하나만 바꾸면 hover 보더/틴트/칩 등이 전부 따라간다.
+ * 아래 구조:
+ *  1. canonical :root 토큰 (색상/반경/그림자/폰트/모션) — --color-danger 한 값만 예외
+ *  2. 이 프로젝트 전용 확장 토큰(:root 두 번째 블록) — 스페이싱/타이포 스케일, 차트 팔레트.
+ *     canonical에는 아직 없는 값들이라 여기서 분리해 얹는다.
+ *  3. 리셋 + h1(canonical) + h2/h3(이 프로젝트 전용 — canonical은 아직 정의 안 함)
+ *  4. 나머지는 canonical 그대로.
  *
- * 주의: 이 파일은 링크(<link>)해서 쓰는 블록에만 적용된다. 허브 목업
- * (나라셀라 정보 대시보드.dc.html/index.html)은 Design Canvas 인라인 스타일 방식이라
- * 이 파일을 참조하지 않는다 — design.md 참고.
+ * --color-danger만 canonical 기본값(#E5484D) 대신 #DC2626을 쓴다 — 2026-09-14
+ * 환율 블록을 이 대시보드에 탭으로 통합하면서, 환율 차트의 유로(빨강) 계열색과
+ * 하락 표시 색을 통일하기로 한 결정. 나머지 색은 전부 canonical과 동일하다.
  */
+
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@500;600;700&display=swap');
+/* Lora는 --font-serif-display가 산세리프로 바뀐 뒤로도 canonical이 남겨둔 것 —
+   이 변수를 안 쓰고 직접 Lora를 참조하는 블록별 사본이 아직 있을 수 있어서다. */
 
 :root {
   /* ── Accent — 블록마다 이 한 값만 바꾸면 파생 색(색칠된 배지, hover 등)이
      전부 따라간다. 기본값은 NARA-Design-System accent(블루). */
   --accent: #2383E2;
 
-  /* ── 중립색 스케일 — NARA-Design-System 톤(무채색 그레이)으로 갱신.
-     이름은 기존 그대로 유지(컴포넌트 코드 수정 없이 값만 바뀌게). */
+  /* ── 중립색 스케일 — NARA-Design-System 톤(무채색 그레이). */
   --color-text: #111111;            /* 본문 기본 텍스트, h1 */
   --color-text-secondary: #262626;  /* 카드 타이틀 등 약간 낮은 위계 */
   --color-text-strong-muted: #404040; /* 문서 링크 텍스트 등 */
@@ -50,9 +50,14 @@
   --color-surface-hover: #FAFAFA;   /* 테이블 행 hover */
   --color-bg: #FAFAFA;              /* 페이지 전체 배경 */
 
-  --color-danger: #DC2626;          /* "업데이트됨" 점, 경고 점, 하락 표시 — 환율 블록의 유로(빨강) 계열색과 통일 */
+  --color-danger: #DC2626;          /* 환율 차트 유로(빨강) 계열색과 통일 — canonical 기본값(#E5484D) 예외 */
   --color-danger-text: #B6544A;     /* 로그아웃 등 위험 텍스트 */
   --color-up: #1A7F37;              /* 신장율 상승 등 — accent와 무관한 별도 semantic 색 */
+  --color-yellow-soft: #FDF3D0;     /* .ds-grid 컬럼 하이라이트 배경(선택된 컬럼 강조) */
+  --color-chart-emphasis: #2C4870;  /* 차트 최강조색(네이비) — --accent와 별도. accent는
+                                        "클릭 가능함"을 알리는 인터랙션 신호라 차트의
+                                        "이 데이터가 중요하다" 강조엔 안 씀. 보조강조는
+                                        이 색에서 color-mix()로 옅게 파생시켜 쓴다. */
 
   /* ── 반경 — NARA-Design-System 스케일(2xl은 모달용으로 추가 연장) */
   --radius-sm: 4px;    /* 배지, 칩, 작은 태그 */
@@ -70,15 +75,17 @@
 
   /* ── 타이포그래피 */
   --font-sans: 'Inter', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif; /* 본문/UI */
-  --font-serif-display: 'Lora', 'Noto Serif KR', Georgia, serif; /* 페이지 제목 등 큰 헤딩 */
+  --font-serif-display: 'IBM Plex Sans KR', 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif; /* 페이지 제목 등 큰 헤딩(산세리프, 이름은 유지) */
   --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace; /* 그리드 상태바 셀 참조 등 */
 
   /* ── 모션 — NARA-Design-System ease-standard */
   --transition-fast: .12s cubic-bezier(.165,.84,.44,1);
   --transition-standard: .18s cubic-bezier(.165,.84,.44,1);
+}
 
-  /* ── 스페이싱 스케일 — NARA-Design-System spacing.css 원본 그대로 이식
-     (기존엔 색상/반경/그림자만 옮기고 이 스케일은 누락돼 있었음) */
+/* ── 이 프로젝트 전용 확장 토큰 — canonical에는 아직 없는 값들. ── */
+:root {
+  /* 스페이싱 스케일 */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -89,8 +96,7 @@
   --space-8: 64px;
   --space-9: 96px;
 
-  /* ── 타이포그래피 스케일(shorthand font 토큰) — NARA-Design-System typography.css 이식.
-     font 패밀리는 이 파일의 기존 변수명(--font-sans/--font-mono)을 그대로 참조. */
+  /* 타이포그래피 스케일(shorthand font 토큰). 폰트 패밀리는 위 --font-sans/--font-mono 참조. */
   --text-heading: 700 22px/1.35 var(--font-sans);
   --text-subheading: 600 17px/1.4 var(--font-sans);
   --text-body: 400 16px/1.6 var(--font-sans);
@@ -98,11 +104,9 @@
   --text-caption: 500 12px/1.4 var(--font-sans);
   --text-mono: 400 14px/1.6 var(--font-mono);
 
-  /* ── 차트 색상 팔레트 — NARA-Design-System colors.css 원본 그대로 이식.
-     --accent(진한 브랜드 블루)와 별개로, 차트 계열색은 이 톤다운된 팔레트를 쓴다
-     (지금까지 누락돼 있어서 차트가 --accent 원색을 그대로 썼음).
-     --chart-1은 2026-09-14에 환율 블록 편입에 맞춰 그 블록의 달러(파랑) 계열색으로 교체 —
-     CSI/가처분소득/주류 차트가 전부 이 토큰 하나를 쓰므로 자동으로 환율 차트와 색이 통일된다. */
+  /* 차트 색상 팔레트. --chart-1은 2026-09-14 환율 블록 통합 때 그 블록의
+     달러(블루) 계열색으로 교체 — CSI/가처분소득/주류 차트가 전부 이 토큰 하나를
+     쓰므로 자동으로 환율 차트와 색이 통일된다. */
   --chart-1: #2563EB;
   --chart-2: #ddc78f;
   --chart-3: #b3b3b3;
@@ -131,7 +135,7 @@ body{
 button,input{font-family:inherit}
 a{color:inherit;text-decoration:none}
 
-/* 페이지 제목 — NARA-Design-System의 serif display 헤딩을 이식 */
+/* 페이지 제목 — NARA-Design-System의 display 헤딩을 이식 */
 h1{
   font-family:var(--font-serif-display);
   font-weight:600;
@@ -140,9 +144,7 @@ h1{
   color:var(--color-text);
   margin:0 0 4px;
 }
-/* 섹션/모달 제목 — NARA-Design-System heading/subheading 스케일(h1 아래 위계).
-   이전엔 h1만 정의돼 있어 각 지표 섹션의 h2("1. 달러·유로 환율" 등)가
-   브라우저 기본 스타일(세리프 아님, 다른 크기/줄간격)로 떨어져 있었음. */
+/* 섹션 제목 — 이 프로젝트 전용 추가(canonical은 h1까지만 정의). h1 아래 위계. */
 h2{
   font:var(--text-heading);
   color:var(--color-text);
@@ -314,13 +316,15 @@ table.ds-table td.k{
   color:var(--color-text-faint);
   font-weight:600;
 }
+/* 숫자 컬럼 — 우측정렬 + tabular-nums + font-mono로 자릿수를 맞춘다 */
+table.ds-table td.num{
+  text-align:right;
+  font-family:var(--font-mono);
+  font-variant-numeric:tabular-nums;
+}
 
 /* ============================================================
    데이터 그리드 (.ds-grid) — 스프레드시트 밀도의 편집 가능한 표.
-   .ds-table보다 촘촘하고(행 높이 34px, 셀마다 격자선), 실적 입력/집계처럼
-   숫자를 직접 고쳐 넣고 확인하는 화면에 쓴다. 정렬·컬럼 리사이즈·방향키
-   셀 이동 같은 동작은 이 CSS가 아니라 그리드를 쓰는 페이지 쪽 JS가 구현하고,
-   여기 클래스는 그 상태(정렬됨/선택된 셀 등)의 모양만 정의한다.
    ============================================================ */
 table.ds-grid{
   border-collapse:collapse;
@@ -338,17 +342,18 @@ table.ds-grid td{
   color:var(--color-text);
 }
 table.ds-grid thead th{
-  background:var(--color-surface-muted);
-  color:var(--color-text-secondary);
+  background:var(--color-border);
+  color:var(--color-text);
   font-weight:700;
-  font-size:11.5px;
-  text-align:left;
+  font-size:12.5px;
+  text-align:center;
   cursor:pointer;
   user-select:none;
   position:relative;
 }
-table.ds-grid thead th.num{text-align:right}
 table.ds-grid thead th.sorted{color:var(--accent)}
+table.ds-grid td.num,
+table.ds-grid th.num{font-family:var(--font-mono)}
 /* 컬럼 리사이즈 손잡이(헤더 우측 끝) — 드래그 동작은 JS에서 구현 */
 table.ds-grid .col-resize-handle{
   position:absolute;top:0;right:0;width:6px;height:100%;cursor:col-resize;
@@ -359,8 +364,6 @@ table.ds-grid tbody tr:hover td{background:color-mix(in srgb, var(--accent) 5%, 
 table.ds-grid tbody tr.self td.ds-grid-dim{color:var(--accent)}
 table.ds-grid td.ds-grid-dim{text-align:left;font-weight:600;color:var(--color-text-secondary)}
 table.ds-grid td.ds-grid-computed{color:var(--color-text-muted);font-weight:600}
-/* 편집 가능한 셀 — hover로 편집 가능함을 알리고, active로 현재 선택된 셀(스프레드시트의
-   활성 셀처럼 accent 2px 링)을 표시한다. 둘 다 JS가 클래스를 토글해서 쓴다. */
 table.ds-grid td.ds-grid-cell{cursor:cell;position:relative}
 table.ds-grid td.ds-grid-cell.editable:hover{outline:1px solid var(--color-border-input);outline-offset:-1px}
 table.ds-grid td.ds-grid-cell.active{
@@ -386,10 +389,60 @@ table.ds-grid tfoot td{
   background:var(--color-surface-muted);
   color:var(--color-text-secondary);
 }
-/* 신장율처럼 부호 있는 값 — accent가 아니라 별도 semantic 색(--color-up/--color-danger)으로 표시 */
 .ds-grid-growth{display:inline-flex;align-items:center;gap:3px;font-weight:700}
 .ds-grid-growth.up{color:var(--color-up)}
 .ds-grid-growth.down{color:var(--color-danger)}
+table.ds-grid td.up{color:var(--color-up);font-weight:700}
+table.ds-grid td.down{color:var(--color-danger);font-weight:700}
+
+/* 계층형 실적 그리드 — Tier/브랜드/라인처럼 3단 이하로 집계되는 표 */
+table.ds-grid tbody tr.ds-grid-lvl1 td{
+  background:var(--color-surface-tint);
+  font-weight:700;
+}
+table.ds-grid tbody tr.ds-grid-lvl1 td:first-child{text-align:left}
+table.ds-grid tbody tr.ds-grid-lvl1:hover td{
+  background:color-mix(in srgb, var(--accent) 14%, var(--color-surface));
+}
+table.ds-grid tbody tr.ds-grid-lvl2 td{
+  background:var(--color-surface-muted);
+  font-weight:600;
+}
+table.ds-grid tbody tr.ds-grid-lvl2 td:first-child{text-align:left;padding-left:24px}
+table.ds-grid tbody tr.ds-grid-lvl3 td{
+  background:var(--color-surface);
+  font-weight:400;
+  color:var(--color-text-secondary);
+}
+table.ds-grid tbody tr.ds-grid-lvl3 td:first-child{text-align:left;padding-left:40px}
+table.ds-grid tbody tr.ds-grid-leaf td:first-child{text-align:right;padding-left:0}
+table.ds-grid tbody tr.ds-grid-total td{
+  background:var(--color-surface-muted);
+  font-weight:700;
+  border-top:2px solid var(--color-text);
+}
+table.ds-grid tbody tr.ds-grid-total td:first-child{text-align:left}
+table.ds-grid th.group-header{text-align:center}
+table.ds-grid td.col-highlight,
+table.ds-grid th.col-highlight{
+  background:var(--color-yellow-soft) !important;
+}
+table.ds-grid.scrollable thead th{
+  position:sticky;
+  top:0;
+  z-index:3;
+}
+table.ds-grid.scrollable thead tr:last-child th{top:34px}
+table.ds-grid.scrollable thead th:first-child{
+  left:0;
+  z-index:4;
+}
+table.ds-grid.scrollable tbody td:first-child{
+  position:sticky;
+  left:0;
+  z-index:2;
+}
+
 /* 그리드 하단 상태바(선택된 셀 참조, 행/열 수) — 모노스페이스로 좌표 느낌을 준다 */
 .ds-grid-statusbar{
   display:flex;
@@ -441,7 +494,7 @@ table.ds-grid tfoot td{
   border-radius:var(--radius-lg);
   padding:18px 20px;
 }
-/* 출처/보조 설명 캡션 — 항상 작고 흐리게(2026-07-09 확정 원칙) */
+/* 출처/보조 설명 캡션 — 항상 작고 흐리게 */
 .field-src{
   font-size:11px;
   color:var(--color-text-faintest);

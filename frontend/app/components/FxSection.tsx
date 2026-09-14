@@ -99,7 +99,7 @@ export default function FxSection({
 
   return (
     <section id="fx" className="card section">
-      <h2>1. 달러 · 유로 환율</h2>
+      <h2>달러 · 유로 환율</h2>
       <EditableInsight section="fx" override={insightOverride} fallback={<FxInsight pts={pts} basis={basis} />} />
       <SourceLine note={data.source_note} source={data.source} />
 
